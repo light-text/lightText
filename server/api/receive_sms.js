@@ -95,7 +95,7 @@ router.post('/', async (req, res, next) => {
       foundReceiver
     ) {
       const msg = `Boom. You made a lightning fast payment to PHONE for ${amount}`
-      const msgReceiver = `Boom. You have got ${amount} from`
+      const msgReceiver = `Boom. You have got ${amount} from `
 
       sendMessage(phone, msg)
       sendMessage(receiverPhoneNumber, msgReceiver)
