@@ -24,6 +24,7 @@ const userExists = async phone => {
     const findUser = await User.findOne({
       where: {phone: phone}
     })
+
     if (findUser === null) {
       return false
     } else {
@@ -34,21 +35,71 @@ const userExists = async phone => {
   }
 }
 
+const getBody = body => {
+  const arr = body.split(' ')
+  return arr
+}
+
+const checkBalance = async (phone, amount) => {
+  try {
+    const findUser = await User.findOne({
+      where: {phone: phone}
+    })
+
+    if (findUser.dataValues.wallet >= amount) {
+      return true
+    } else {
+      return false
+    }
+  } catch (err) {
+    throw new Error(err)
+  }
+}
+
+const foundReceiverNumber = async receiverPhoneNumber => {
+  try {
+    const findReceiver = await User.findOne({
+      where: {phone: receiverPhoneNumber}
+    })
+    if (findReceiver === null) {
+      return false
+    } else {
+      return true
+    }
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 router.post('/', async (req, res, next) => {
+  const body = getBody(req.body.Body)
+  const action = body[0].toLowerCase()
+  const amount = body[1]
+  const receiverPhoneNumber = body[2]
   try {
     const twiml = new MessagingResponse()
     twiml.message(req.body.message)
 
     const phone = req.body.From
-    const body = req.body.Body.toLowerCase()
+
     const status = await userExists(phone)
+    const doesBalanceHaveEnoughFounds = await checkBalance(phone, amount)
+    const foundReceiver = await foundReceiverNumber(receiverPhoneNumber)
     if (body.includes('help')) {
       const msg = `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number' \n Example SEND +11234567890 300`
       sendMessage(phone, msg)
-    } else if (status && body.includes('send')) {
-      const msg = `Boom. You made a lightning fast payment to PHONE for AMOUNT`
+    } else if (
+      status &&
+      action === 'send' &&
+      doesBalanceHaveEnoughFounds &&
+      foundReceiver
+    ) {
+      const msg = `Boom. You made a lightning fast payment to PHONE for ${amount}`
+      const msgReceiver = `Boom. You have got ${amount} from`
+
       sendMessage(phone, msg)
-    } else if (body.includes('balance')) {
+      sendMessage(receiverPhoneNumber, msgReceiver)
+    } else if (action === 'balance') {
       const msg = `Your lightning balance is <BALANCE> satoshis.`
       sendMessage(phone, msg)
     } else {
