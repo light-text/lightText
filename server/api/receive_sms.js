@@ -23,30 +23,29 @@ const userExists = async phone => {
   try {
     const findUser = await User.findOne({
       where: {phone: phone}
-    }).then(user => {
-      if (user === null) return false
-      else return true
     })
+    if (findUser === null) {
+      return false
+    } else {
+      return true
+    }
   } catch (err) {
-    console.error(err)
+    throw new Error(err)
   }
 }
 
-/* const userBalance = async (userId) => {
-
-} */
-
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
   try {
     const twiml = new MessagingResponse()
     twiml.message(req.body.message)
 
     const phone = req.body.From
     const body = req.body.Body.toLowerCase()
+    const status = await userExists(phone)
     if (body.includes('help')) {
       const msg = `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number' \n Example SEND +11234567890 300`
       sendMessage(phone, msg)
-    } else if (body.includes('send') && userExists(phone)) {
+    } else if (status && body.includes('send')) {
       const msg = `Boom. You made a lightning fast payment to PHONE for AMOUNT`
       sendMessage(phone, msg)
     } else if (body.includes('balance')) {
