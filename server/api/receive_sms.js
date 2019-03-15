@@ -26,9 +26,9 @@ const userExists = async phone => {
     })
 
     if (findUser === null) {
-      return false
+      return {status: false}
     } else {
-      return true
+      return {status: true, userName: findUser}
     }
   } catch (err) {
     throw new Error(err)
@@ -62,9 +62,14 @@ const foundReceiverNumber = async receiverPhoneNumber => {
       where: {phone: receiverPhoneNumber}
     })
     if (findReceiver === null) {
-      return false
+      return {
+        status: false
+      }
     } else {
-      return true
+      return {
+        status: true,
+        receiverName: findReceiver
+      }
     }
   } catch (error) {
     throw new Error(error)
@@ -82,20 +87,25 @@ router.post('/', async (req, res, next) => {
 
     const phone = req.body.From
 
-    const status = await userExists(phone)
+    const user = await userExists(phone)
     const doesBalanceHaveEnoughFounds = await checkBalance(phone, amount)
     const foundReceiver = await foundReceiverNumber(receiverPhoneNumber)
+    console.log(user.userName.firstName, 'this shuld work')
     if (body.includes('help')) {
       const msg = `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number' \n Example SEND +11234567890 300`
       sendMessage(phone, msg)
     } else if (
-      status &&
+      user.status &&
       action === 'send' &&
       doesBalanceHaveEnoughFounds &&
-      foundReceiver
+      foundReceiver.status
     ) {
-      const msg = `Boom. You made a lightning fast payment to PHONE for ${amount}`
-      const msgReceiver = `Boom. You have got ${amount} from `
+      const msg = `Boom. You made a lightning fast payment to ${
+        foundReceiver.receiverName.firstName
+      } for ${amount}`
+      const msgReceiver = `Boom. You have got ${amount} from  ${
+        user.userName.firstName
+      }`
 
       sendMessage(phone, msg)
       sendMessage(receiverPhoneNumber, msgReceiver)
