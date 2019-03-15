@@ -1,21 +1,9 @@
 body {
   font-family: sans-serif;
+  background-color: #f3f9fb;
 }
-
-a {
-  text-decoration: none;
-}
-
-label {
-  display: block;
-}
-
-nav a {
-  display: inline-block;
-  margin: 1em;
-}
-
-form div {
-  margin: 1em;
-  display: inline-block;
+.navbar {
+  background-color: #87c0cd;
+  margin-top: 2px;
+  padding-top: 70px;
 }
