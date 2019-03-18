@@ -6,7 +6,7 @@ const client = require('twilio')(
 )
 const {User} = require('../db/models')
 
-const twilioPhone = '+18482202516'
+const twilioPhone = process.env.twilionumber
 
 module.exports = router
 
@@ -20,25 +20,27 @@ const sendMessage = (phone, body) => {
     .then(message => console.log(message.sid))
 }
 
-const userExists = async phone => {
+const findUserByPhone = async phone => {
   try {
     const findUser = await User.findOne({
       where: {phone: phone}
     })
 
-    if (findUser === null) {
-      return {status: false}
-    } else {
-      return {status: true, userName: findUser}
-    }
+    return null || findUser
   } catch (err) {
     throw new Error(err)
   }
 }
 
-const getBody = body => {
-  const arr = body.split(' ')
-  return arr
+const findUserByUsername = async userName => {
+  try {
+    const findUser = await User.findOne({
+      where: {userName: userName}
+    })
+    return null || findUser
+  } catch (error) {
+    throw new Error(error)
+  }
 }
 
 const checkBalance = async (phone, amount) => {
@@ -46,77 +48,86 @@ const checkBalance = async (phone, amount) => {
     const findUser = await User.findOne({
       where: {phone: phone}
     })
-
-    if (findUser.dataValues.wallet >= amount) {
-      return true
-    } else {
-      return false
-    }
+    return findUser.dataValues.wallet >= amount
   } catch (err) {
     throw new Error(err)
   }
 }
 
-const foundReceiverNumber = async receiverPhoneNumber => {
-  try {
-    const findReceiver = await User.findOne({
-      where: {phone: receiverPhoneNumber}
-    })
-    if (findReceiver === null) {
-      return {
-        status: false
-      }
-    } else {
-      return {
-        status: true,
-        receiverName: findReceiver
-      }
-    }
-  } catch (error) {
-    throw new Error(error)
-  }
+const getBody = message => {
+  let msg = message.split(' ')
+  return msg.filter(word => {
+    return word !== ' ' && word.length > 0
+  })
 }
 
 router.post('/', async (req, res, next) => {
   const body = getBody(req.body.Body)
   const action = body[0].toLowerCase()
   const amount = body[1]
-  const receiverPhoneNumber = body[2]
+  const receiverPhone = body[2]
+  console.log(
+    'BODY IS: ',
+    body,
+    'action is: ',
+    action,
+    'amount is ',
+    amount,
+    'receiver phone is: ',
+    receiverPhone
+  )
   try {
     const twiml = new MessagingResponse()
     twiml.message(req.body.message)
 
-    const phone = req.body.From
+    const senderPhone = req.body.From
+    const sender = (await findUserByPhone(senderPhone)) || 'default'
+    const receiver = (await findUserByPhone(receiverPhone)) || 'default'
+    const hasSufficientFunds = await checkBalance(senderPhone, amount)
 
-    const user = await userExists(phone)
-    const doesBalanceHaveEnoughFounds = await checkBalance(phone, amount)
-    const foundReceiver = await foundReceiverNumber(receiverPhoneNumber)
-    console.log(user.userName.firstName, 'this shuld work')
-    if (body.includes('help')) {
-      const msg = `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number' \n Example SEND +11234567890 300`
-      sendMessage(phone, msg)
-    } else if (
-      user.status &&
-      action === 'send' &&
-      doesBalanceHaveEnoughFounds &&
-      foundReceiver.status
-    ) {
-      const msg = `Boom. You made a lightning fast payment to ${
-        foundReceiver.receiverName.firstName
-      } for ${amount}`
-      const msgReceiver = `Boom. You have got ${amount} from  ${
-        user.userName.firstName
+    const messages = {
+      helpme: `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number' \n Example SEND 300 +11234567890`,
+      balance: `Your lightning balance is <BALANCE> satoshis.`,
+      signup:
+        'You are not registered with LightText. Please go to LightText.io to signup.',
+      receiver:
+        'The user you are trying to pay is not registered with us. Please try another user.',
+      insufficientBalance:
+        'You have insufficient funds. Please enter REFILL to up your funding.',
+      sent: `Boom. You made a lightning fast payment to ${
+        receiver.firstName
+      } for ${amount}`,
+      received: `Boom. You received a lightning fast payment for ${amount} from ${
+        sender.firstName
       }`
-
-      sendMessage(phone, msg)
-      sendMessage(receiverPhoneNumber, msgReceiver)
-    } else if (action === 'balance') {
-      const msg = `Your lightning balance is <BALANCE> satoshis.`
-      sendMessage(phone, msg)
-    } else {
-      const msg = `Command not found. Please respond with 'HELP'.`
-      sendMessage(phone, msg)
     }
+
+    if (!sender) {
+      return sendMessage(senderPhone, messages.signup)
+    } else {
+      switch (action) {
+        case 'balance':
+          console.log('hit balance switch')
+          return sendMessage(senderPhone, messages.balance)
+        case 'helpme':
+          return sendMessage(senderPhone, messages.helpme)
+        case 'send':
+          if (!hasSufficientFunds) {
+            return sendMessage(senderPhone, messages.insufficientBalance)
+          }
+          if (!receiver) {
+            return sendMessage(senderPhone, messages.receiver)
+          }
+          return (
+            sendMessage(senderPhone, messages.sent) &&
+            sendMessage(receiverPhone, messages.received)
+          )
+
+        default:
+          sendMessage(senderPhone, messages.helpme)
+      }
+    }
+
     res.writeHead(200, {'Content-Type': 'text/xml'})
     res.end(twiml.toString())
   } catch (err) {
