@@ -1,8 +1,9 @@
 const router = require('express').Router()
 const MessagingResponse = require('twilio').twiml.MessagingResponse
-const accountSid = 'ACc2b61ac520b4e67eb79117cb5fc64cee'
-const authToken = '1c27ab091d4f3ab56589dc0b261190f1'
-const client = require('twilio')(accountSid, authToken)
+const client = require('twilio')(
+  process.env.twilioSid,
+  process.env.twilioAuthToken
+)
 const {User} = require('../db/models')
 
 const twilioPhone = '+18482202516'
