@@ -6,7 +6,7 @@ import {logout} from '../store'
 
 const Navbar = ({handleClick, isLoggedIn}) => (
   <div className="navbar">
-    <div className="logo">
+    <div className="container">
       <img className="imageLogo" src="/images/lightbulbblack.png" />
       <h1 className="title">LightText</h1>
     </div>
@@ -21,7 +21,7 @@ const Navbar = ({handleClick, isLoggedIn}) => (
         </div>
       ) : (
         <div>
-          <div id="links">
+          <div id="link">
             <Link className="links" to="/login">
               Login
             </Link>
