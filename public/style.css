@@ -1,9 +1,44 @@
 body {
   font-family: sans-serif;
   background-color: #f3f9fb;
+  font-family: 'Montserrat', sans-serif;
+  /* margin-left: 3%;
+  margin-right: 3%; */
 }
 .navbar {
-  background-color: #87c0cd;
+  /* background-color: #68bbe1; */
+  background-color: white;
   margin-top: 2px;
-  padding-top: 70px;
+  padding-top: 20px;
+}
+
+.imageLogo {
+  width: 70px;
+  flex: 0.5;
+  margin-left: 50px;
+}
+
+.logo {
+  flex: 1;
+  text-align: left;
+  margin-left: 40px;
+  justify-content: space-around;
+}
+
+.title {
+  flex: 0.5;
+  margin-top: 5;
+  color: #68bbe1;
+  font-family: 'Fredoka One', cursive;
+  font-size: 3rem;
+}
+
+#link {
+  font-size: 1.3rem;
+  text-align: left;
+  padding-bottom: 10px;
+}
+.links {
+  color: #68bbe1;
+  margin-right: 20px;
 }
