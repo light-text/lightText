@@ -2,6 +2,25 @@ const router = require('express').Router()
 const User = require('../db/models/user')
 module.exports = router
 
+const MessagingResponse = require('twilio').twiml.MessagingResponse
+const client = require('twilio')(
+  process.env.twilioSid,
+  process.env.twilioAuthToken
+)
+
+const twilioPhone = '+18482202516'
+
+const sendMessage = (phone, body) => {
+  console.log('heeeeeeeeey')
+  client.messages
+    .create({
+      body: body,
+      from: twilioPhone,
+      to: phone
+    })
+    .then(message => console.log(message.sid))
+}
+
 router.post('/login', async (req, res, next) => {
   try {
     const user = await User.findOne({where: {email: req.body.email}})
@@ -21,8 +40,23 @@ router.post('/login', async (req, res, next) => {
 })
 
 router.post('/signup', async (req, res, next) => {
+  console.log(req.body, '/////////////////////')
   try {
     const user = await User.create(req.body)
+    client.validationRequests
+      .create({
+        friendlyName: req.body.firstName,
+        phoneNumber: req.body.phone,
+        callDelay: 13
+      })
+      .then(validation_request =>
+        sendMessage(
+          req.body.phone,
+          `Your Twilio code is : 
+          ${validation_request.validationCode} `
+        )
+      )
+
     req.login(user, err => (err ? next(err) : res.json(user)))
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
