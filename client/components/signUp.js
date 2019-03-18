@@ -1,8 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import PropTypes from 'prop-types'
-import {login} from '../store'
-
+import {auth} from '../store'
 import {Link} from 'react-router-dom'
 import {
   Button,
@@ -18,7 +16,7 @@ import {
  * COMPONENT
  */
 
-const AuthForm = props => {
+const SignUp = props => {
   const {name, displayName, handleSubmit, error} = props
   return (
     <div className="login-form">
@@ -46,6 +44,14 @@ const AuthForm = props => {
                 fluid
                 icon="user"
                 iconPosition="left"
+                placeholder="name"
+                name="firstName"
+                type="text"
+              />
+              <Form.Input
+                fluid
+                icon="mail"
+                iconPosition="left"
                 placeholder="E-mail address"
                 name="email"
                 type="text"
@@ -56,6 +62,22 @@ const AuthForm = props => {
                 iconPosition="left"
                 placeholder="Password"
                 name="password"
+                type="password"
+              />
+              <Form.Input
+                fluid
+                icon="phone"
+                iconPosition="left"
+                placeholder="Phone Number"
+                name="phoneNumber"
+                type="text"
+              />
+              <Form.Input
+                fluid
+                icon="bitcoin"
+                iconPosition="left"
+                placeholder="Wallet"
+                name="wallet"
                 type="password"
               />
 
@@ -74,21 +96,13 @@ const AuthForm = props => {
   )
 }
 
-/**
- * CONTAINER
- *   Note that we have two different sets of 'mapStateToProps' functions -
- *   one for Login, and one for Signup. However, they share the same 'mapDispatchToProps'
- *   function, and share the same Component. This is a good example of how we
- *   can stay DRY with interfaces that are very similar to each other!
- */
-const mapLogin = state => {
+const mapSignup = state => {
   return {
-    name: 'login',
-    displayName: 'Login',
+    name: 'signup',
+    displayName: 'Sign Up',
     error: state.user.error
   }
 }
-
 const mapDispatch = dispatch => {
   return {
     handleSubmit(evt) {
@@ -96,18 +110,12 @@ const mapDispatch = dispatch => {
       const formName = evt.target.name
       const email = evt.target.email.value
       const password = evt.target.password.value
-      dispatch(login(email, password, formName))
+      const phone = evt.target.phoneNumber.value
+      const wallet = evt.target.wallet.value
+      const name = evt.target.firstName.value
+      dispatch(auth(formName, email, password, phone, wallet, name))
     }
   }
 }
 
-export const Login = connect(mapLogin, mapDispatch)(AuthForm)
-/**
- * PROP TYPES
- */
-AuthForm.propTypes = {
-  name: PropTypes.string.isRequired,
-  displayName: PropTypes.string.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  error: PropTypes.object
-}
+export const Signup = connect(mapSignup, mapDispatch)(SignUp)
