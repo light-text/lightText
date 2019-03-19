@@ -11,7 +11,6 @@ const client = require('twilio')(
 const twilioPhone = '+18482202516'
 
 const sendMessage = (phone, body) => {
-  console.log('heeeeeeeeey')
   client.messages
     .create({
       body: body,
@@ -40,7 +39,6 @@ router.post('/login', async (req, res, next) => {
 })
 
 router.post('/signup', async (req, res, next) => {
-  console.log(req.body, '/////////////////////')
   try {
     const user = await User.create(req.body)
     client.validationRequests
@@ -49,11 +47,11 @@ router.post('/signup', async (req, res, next) => {
         phoneNumber: req.body.phone,
         callDelay: 13
       })
-      .then(validation_request =>
+      .then(validationRequest =>
         sendMessage(
           req.body.phone,
           `Your Twilio code is : 
-          ${validation_request.validationCode} `
+          ${validationRequest.validationCode} `
         )
       )
 

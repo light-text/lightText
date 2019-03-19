@@ -45,7 +45,7 @@ const SignUp = props => {
                 icon="user"
                 iconPosition="left"
                 placeholder="User name"
-                name="firstName"
+                name="userName"
                 type="text"
                 required
               />
@@ -112,13 +112,12 @@ const mapDispatch = dispatch => {
   return {
     handleSubmit(evt) {
       evt.preventDefault()
-      const formName = evt.target.name
       const email = evt.target.email.value
       const password = evt.target.password.value
       const phone = evt.target.phoneNumber.value
       const wallet = evt.target.wallet.value
-      const name = evt.target.firstName.value
-      dispatch(auth(formName, email, password, phone, wallet, name))
+      const userName = evt.target.userName.value
+      dispatch(auth(userName, email, password, phone, wallet))
     }
   }
 }
