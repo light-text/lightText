@@ -45,16 +45,16 @@ const findUserByPhone = async phone => {
 //   }
 // }
 
-const checkBalance = async (phone, amount) => {
-  try {
-    const findUser = await User.findOne({
-      where: {phone: phone}
-    })
-    return findUser.dataValues.balance >= amount
-  } catch (err) {
-    throw new Error(err)
-  }
-}
+// const checkBalance = async (phone, amount) => {
+//   try {
+//     const findUser = await User.findOne({
+//       where: {phone: phone}
+//     })
+//     return findUser.dataValues.balance >= amount
+//   } catch (err) {
+//     throw new Error(err)
+//   }
+// }
 
 const getBalance = async phone => {
   try {
@@ -97,8 +97,9 @@ router.post('/', async (req, res, next) => {
     const senderPhone = req.body.From
     const sender = (await findUserByPhone(senderPhone)) || 'undefined'
     const receiver = (await findUserByPhone(receiverPhone)) || 'undefined'
-    const hasSufficientFunds = await checkBalance(senderPhone, amount)
+
     const balance = await getBalance(senderPhone)
+    const hasSufficientFunds = balance >= amount
 
     const messages = {
       helpme: `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number' \n Example SEND 300 +11234567890`,
