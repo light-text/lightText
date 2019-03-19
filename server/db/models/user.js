@@ -8,7 +8,7 @@ const User = db.define('user', {
     allowNull: false,
     unique: true,
     validate: {
-      notEmpty: false
+      notEmpty: true
     }
   },
   email: {
@@ -16,7 +16,7 @@ const User = db.define('user', {
     unique: true,
     allowNull: false,
     validate: {
-      notEmpty: false
+      notEmpty: true
     }
   },
   phone: {
@@ -24,7 +24,7 @@ const User = db.define('user', {
     allowNull: false,
     unique: true,
     validate: {
-      notEmpty: false
+      notEmpty: true
     }
   },
   wallet: {

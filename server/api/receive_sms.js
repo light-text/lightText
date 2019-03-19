@@ -28,31 +28,27 @@ const findUserByPhone = async phone => {
       where: {phone: phone}
     })
 
-    return undefined || findUser
+    return null || findUser
   } catch (err) {
     throw new Error(err)
   }
 }
 
-// const findUserByUsername = async userName => {
-//   try {
-//     const findUser = await User.findOne({
-//       where: {userName: userName}
-//     })
-//     return null || findUser
-//   } catch (error) {
-//     throw new Error(error)
-//   }
-// }
-
-const checkBalance = async (phone, amount) => {
+const findUserByUsername = async userName => {
   try {
     const findUser = await User.findOne({
-      where: {phone: phone}
+      where: {username: userName}
     })
-    return findUser.dataValues.balance >= amount
-  } catch (err) {
-    throw new Error(err)
+
+    if (!findUser) return null
+    else {
+      return {
+        userName: findUser.dataValues.username,
+        number: findUser.dataValues.phone
+      }
+    }
+  } catch (error) {
+    throw new Error(error)
   }
 }
 
@@ -80,6 +76,7 @@ router.post('/', async (req, res, next) => {
   const amount = body[1]
   const receiverPhone = body[2]
   const refillWallet = 'weri4343yruicj2345djh12432mnxc33234'
+
   console.log(
     'BODY IS: ',
     body,
@@ -94,11 +91,18 @@ router.post('/', async (req, res, next) => {
     const twiml = new MessagingResponse()
     twiml.message(req.body.message)
 
+    const ourReceiver = await findUserByUsername(receiverPhone)
+
     const senderPhone = req.body.From
     const sender = (await findUserByPhone(senderPhone)) || 'undefined'
-    const receiver = (await findUserByPhone(receiverPhone)) || 'undefined'
-    const hasSufficientFunds = await checkBalance(senderPhone, amount)
+
+    const receiver =
+      (await findUserByPhone(receiverPhone)) ||
+      (await ourReceiver.userName) ||
+      'undefined'
+
     const balance = await getBalance(senderPhone)
+    const hasSufficientFunds = balance >= amount
 
     const messages = {
       helpme: `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number' \n Example SEND 300 +11234567890`,
@@ -110,10 +114,10 @@ router.post('/', async (req, res, next) => {
       insufficientBalance:
         'You have insufficient funds. Please enter REFILL to up your funding.',
       sent: `Boom. You made a lightning fast payment to ${
-        receiver.firstName
+        receiver.username
       } for ${amount}`,
       received: `Boom. You received a lightning fast payment for ${amount} from ${
-        sender.firstName
+        sender.username
       }`,
       refill:
         "We are in beta, please don't send more than $20 to the following address"
@@ -140,8 +144,10 @@ router.post('/', async (req, res, next) => {
           if (!hasSufficientFunds) {
             return sendMessage(senderPhone, messages.insufficientBalance)
           }
+
           sendMessage(senderPhone, messages.sent)
-          sendMessage(receiverPhone, messages.received)
+          sendMessage(ourReceiver.number, messages.received)
+
           break
         default:
           sendMessage(senderPhone, messages.helpme)
