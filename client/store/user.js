@@ -73,7 +73,7 @@ export const login = (email, password) => async dispatch => {
 
   try {
     dispatch(getUser(res.data))
-    history.push('/home')
+    history.push('/userHome')
   } catch (dispatchOrHistoryErr) {
     console.error(dispatchOrHistoryErr)
   }

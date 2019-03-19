@@ -65,9 +65,9 @@ const AuthForm = props => {
             </Segment>
             {error && error.response && <div> {error.response.data} </div>}
           </Form>
-          <Message>
+          {/* <Message>
             <Link to="/auth/google"> {displayName} with Google </Link>
-          </Message>
+          </Message> */}
         </Grid.Column>
       </Grid>
     </div>
