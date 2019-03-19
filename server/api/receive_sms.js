@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 const router = require('express').Router()
+const axios = require('axios')
 const MessagingResponse = require('twilio').twiml.MessagingResponse
 const client = require('twilio')(
   process.env.twilioSid,
@@ -63,6 +64,14 @@ const getBalance = async phone => {
   }
 }
 
+const getCurrencies = async () => {
+  try {
+    return await axios.get('https://api.coindesk.com/v1/bpi/currentprice.json')
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 const getBody = message => {
   let msg = message.split(' ')
   return msg.filter(word => {
@@ -91,8 +100,11 @@ router.post('/', async (req, res, next) => {
     const twiml = new MessagingResponse()
     twiml.message(req.body.message)
 
-    const ourReceiver = await findUserByUsername(receiverPhone)
+    let ourReceiver = await findUserByUsername(receiverPhone)
 
+    if (ourReceiver === null) {
+      ourReceiver = {username: false}
+    }
     const senderPhone = req.body.From
     const sender = (await findUserByPhone(senderPhone)) || 'undefined'
 
@@ -103,10 +115,13 @@ router.post('/', async (req, res, next) => {
 
     const balance = await getBalance(senderPhone)
     const hasSufficientFunds = balance >= amount
+    const converterUSD = await getCurrencies()
+    const usdRate = converterUSD.data.bpi.USD.rate_float
 
     const messages = {
       helpme: `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number' \n Example SEND 300 +11234567890`,
-      balance: `Your lightning balance is ${balance} satoshis.`,
+      balance: `Your lightning balance is ${balance} satoshis (${balance *
+        usdRate} USD).`,
       signup:
         'You are not registered with LightText. Please go to LightText.io to signup.',
       receiver:
@@ -114,7 +129,7 @@ router.post('/', async (req, res, next) => {
       insufficientBalance:
         'You have insufficient funds. Please enter REFILL to up your funding.',
       sent: `Boom. You made a lightning fast payment to ${
-        receiver.username
+        ourReceiver.userName
       } for ${amount}`,
       received: `Boom. You received a lightning fast payment for ${amount} from ${
         sender.username
