@@ -44,9 +44,10 @@ const SignUp = props => {
                 fluid
                 icon="user"
                 iconPosition="left"
-                placeholder="name"
+                placeholder="User name"
                 name="firstName"
                 type="text"
+                required
               />
               <Form.Input
                 fluid
@@ -55,6 +56,7 @@ const SignUp = props => {
                 placeholder="E-mail address"
                 name="email"
                 type="text"
+                required
               />
               <Form.Input
                 fluid
@@ -63,6 +65,7 @@ const SignUp = props => {
                 placeholder="Password"
                 name="password"
                 type="password"
+                required
               />
               <Form.Input
                 fluid
@@ -71,6 +74,7 @@ const SignUp = props => {
                 placeholder="Phone Number"
                 name="phoneNumber"
                 type="text"
+                required
               />
               <Form.Input
                 fluid
@@ -79,6 +83,7 @@ const SignUp = props => {
                 placeholder="Wallet"
                 name="wallet"
                 type="password"
+                required
               />
 
               <Button type="submit" color="blue" fluid size="large">
