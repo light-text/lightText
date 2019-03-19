@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const router = require('express').Router()
 const MessagingResponse = require('twilio').twiml.MessagingResponse
 const client = require('twilio')(
@@ -26,29 +28,40 @@ const findUserByPhone = async phone => {
       where: {phone: phone}
     })
 
-    return null || findUser
+    return undefined || findUser
   } catch (err) {
     throw new Error(err)
   }
 }
 
-const findUserByUsername = async userName => {
-  try {
-    const findUser = await User.findOne({
-      where: {userName: userName}
-    })
-    return null || findUser
-  } catch (error) {
-    throw new Error(error)
-  }
-}
+// const findUserByUsername = async userName => {
+//   try {
+//     const findUser = await User.findOne({
+//       where: {userName: userName}
+//     })
+//     return null || findUser
+//   } catch (error) {
+//     throw new Error(error)
+//   }
+// }
 
 const checkBalance = async (phone, amount) => {
   try {
     const findUser = await User.findOne({
       where: {phone: phone}
     })
-    return findUser.dataValues.wallet >= amount
+    return findUser.dataValues.balance >= amount
+  } catch (err) {
+    throw new Error(err)
+  }
+}
+
+const getBalance = async phone => {
+  try {
+    const findUser = await User.findOne({
+      where: {phone: phone}
+    })
+    return findUser.dataValues.balance
   } catch (err) {
     throw new Error(err)
   }
@@ -66,6 +79,7 @@ router.post('/', async (req, res, next) => {
   const action = body[0].toLowerCase()
   const amount = body[1]
   const receiverPhone = body[2]
+  const refillWallet = 'weri4343yruicj2345djh12432mnxc33234'
   console.log(
     'BODY IS: ',
     body,
@@ -81,13 +95,14 @@ router.post('/', async (req, res, next) => {
     twiml.message(req.body.message)
 
     const senderPhone = req.body.From
-    const sender = (await findUserByPhone(senderPhone)) || 'default'
-    const receiver = (await findUserByPhone(receiverPhone)) || 'default'
+    const sender = (await findUserByPhone(senderPhone)) || 'undefined'
+    const receiver = (await findUserByPhone(receiverPhone)) || 'undefined'
     const hasSufficientFunds = await checkBalance(senderPhone, amount)
+    const balance = await getBalance(senderPhone)
 
     const messages = {
       helpme: `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number' \n Example SEND 300 +11234567890`,
-      balance: `Your lightning balance is <BALANCE> satoshis.`,
+      balance: `Your lightning balance is ${balance} satoshis.`,
       signup:
         'You are not registered with LightText. Please go to LightText.io to signup.',
       receiver:
@@ -99,30 +114,35 @@ router.post('/', async (req, res, next) => {
       } for ${amount}`,
       received: `Boom. You received a lightning fast payment for ${amount} from ${
         sender.firstName
-      }`
+      }`,
+      refill:
+        "We are in beta, please don't send more than $20 to the following address"
     }
 
     if (!sender) {
       return sendMessage(senderPhone, messages.signup)
     } else {
       switch (action) {
+        case 'refill':
+          setTimeout(() => {
+            return sendMessage(senderPhone, refillWallet)
+          }, 400)
+          return sendMessage(senderPhone, messages.refill)
         case 'balance':
-          console.log('hit balance switch')
           return sendMessage(senderPhone, messages.balance)
         case 'helpme':
           return sendMessage(senderPhone, messages.helpme)
         case 'send':
+          if (receiver === 'undefined') {
+            console.log(receiver, 'why is not working')
+            return sendMessage(senderPhone, messages.receiver)
+          }
           if (!hasSufficientFunds) {
             return sendMessage(senderPhone, messages.insufficientBalance)
           }
-          if (!receiver) {
-            return sendMessage(senderPhone, messages.receiver)
-          }
-          return (
-            sendMessage(senderPhone, messages.sent) &&
-            sendMessage(receiverPhone, messages.received)
-          )
-
+          sendMessage(senderPhone, messages.sent)
+          sendMessage(receiverPhone, messages.received)
+          break
         default:
           sendMessage(senderPhone, messages.helpme)
       }
