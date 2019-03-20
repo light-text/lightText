@@ -1,27 +1,36 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-
+import {getTransactionThunk} from '../store/transactions'
 /**
  * COMPONENT
  */
-export const userHome = props => {
-  const {user} = props
+export class userHome extends React.Component {
+  constructor(props) {
+    super(props)
+  }
 
-  return (
-    <div>
-      <div id="iphone">
-        <h3 id="welcome">Welcome, {user.username}</h3>
-        <p id="balance">Your balance : {user.balance} satoshis.</p>
-        <p id="transactions">Your transactions : </p>
-        <img
-          id="iphoneImage"
-          style={{width: 250, height: 501}}
-          src="/images/iphone.png"
-        />
+  componentDidMount() {
+    this.props.getTransaction()
+  }
+  render() {
+    const {user, transactions} = this.props
+    console.log(transactions, 'LetSeeeeeeee')
+    return (
+      <div>
+        <div id="iphone">
+          <h3 id="welcome">Welcome, {user.username}</h3>
+          <p>Your balance : {user.balance} satoshis.</p>
+          <p>Your transactions : </p>
+          <img
+            id="iphoneImage"
+            style={{width: 250, height: 501}}
+            src="/images/iphone.png"
+          />
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
 /**
@@ -29,11 +38,17 @@ export const userHome = props => {
  */
 const mapState = state => {
   return {
-    user: state.user
+    user: state.user,
+    transactions: state.transactions
+  }
+}
+const dispatchMapState = dispatch => {
+  return {
+    getTransaction: () => dispatch(getTransactionThunk())
   }
 }
 
-export default connect(mapState)(userHome)
+export default connect(mapState, dispatchMapState)(userHome)
 
 /**
  * PROP TYPES
