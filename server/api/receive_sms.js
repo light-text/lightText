@@ -9,6 +9,8 @@ const client = require('twilio')(
 )
 const {User} = require('../db/models')
 const {unlockwallet, getinfo} = require('./crypto')
+const {Transactions} = require('../db/models')
+
 const twilioPhone = process.env.twilionumber
 
 module.exports = router
@@ -45,7 +47,8 @@ const findUserByUsername = async userName => {
     else {
       return {
         userName: findUser.dataValues.username,
-        number: findUser.dataValues.phone
+        number: findUser.dataValues.phone,
+        userId: findUser.dataValues['id']
       }
     }
   } catch (error) {
@@ -159,7 +162,6 @@ router.post('/', async (req, res, next) => {
           return sendMessage(senderPhone, messages.helpme)
         case 'send':
           if (receiver === 'undefined') {
-            console.log(receiver, 'why is not working')
             return sendMessage(senderPhone, messages.receiver)
           }
           if (!hasSufficientFunds) {
@@ -168,6 +170,11 @@ router.post('/', async (req, res, next) => {
 
           sendMessage(senderPhone, messages.sent)
           sendMessage(ourReceiver.number, messages.received)
+          Transactions.create({
+            amount: amount,
+            receiverId: ourReceiver.userId,
+            senderId: sender['id']
+          })
 
           break
         default:

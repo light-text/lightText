@@ -44,6 +44,22 @@ body {
   margin-right: 20px;
 }
 
+.balance {
+  position: absolute;
+  z-index: 100;
+  text-align: center;
+  left: 45%;
+  top: 10%;
+}
+
+.transactions {
+  position: absolute;
+  z-index: 100;
+  text-align: center;
+  left: 45%;
+  top: 20%;
+}
+
 #iphone {
   margin-top: 150px;
   position: relative;
@@ -66,7 +82,7 @@ body {
   z-index: 100;
   text-align: center;
   left: 45%;
-  top: 10%;
+  top: 6%;
 }
 
 #balance {
@@ -115,4 +131,8 @@ body {
 .iphoneHome {
   margin-top: 50px;
   align-items: left;
+}
+
+.userList {
+  font-size: 10px;
 }
