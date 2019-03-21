@@ -1,11 +1,11 @@
 /* eslint-disable handle-callback-err */
 var fs = require('fs')
 var request = require('request')
-var macaroon = fs
-  .readFileSync(
-    '/home/milanpatel/gocode/dev/alice/data/chain/bitcoin/simnet/admin.macaroon'
-  )
-  .toString('hex')
+// var macaroon = fs
+//   .readFileSync(
+//     '/home/milanpatel/gocode/dev/alice/data/chain/bitcoin/simnet/admin.macaroon'
+//   )
+//   .toString('hex')
 
 // wallet_password: 'fullstackacademy'
 
