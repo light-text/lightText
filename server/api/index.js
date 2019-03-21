@@ -3,6 +3,8 @@ module.exports = router
 
 router.use('/users', require('./users'))
 router.use('/sms', require('./receive_sms'))
+
+router.use('/lightning', require('./lightning'))
 router.use('/transactions', require('./transactions'))
 
 router.use((req, res, next) => {

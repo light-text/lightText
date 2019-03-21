@@ -8,6 +8,7 @@ const client = require('twilio')(
   process.env.twilioAuthToken
 )
 const {User} = require('../db/models')
+const {unlockwallet, getinfo} = require('./crypto')
 const {Transactions} = require('../db/models')
 
 const twilioPhone = process.env.twilionumber
@@ -60,6 +61,7 @@ const getBalance = async phone => {
     const findUser = await User.findOne({
       where: {phone: phone}
     })
+    if (!findUser) console.log('This user does not exist: ', findUser)
     return findUser.dataValues.balance
   } catch (err) {
     throw new Error(err)
@@ -149,8 +151,13 @@ router.post('/', async (req, res, next) => {
             return sendMessage(senderPhone, refillWallet)
           }, 400)
           return sendMessage(senderPhone, messages.refill)
-        case 'balance':
-          return sendMessage(senderPhone, messages.balance)
+        case 'balance': {
+          console.log('YOU ARE IN BALANCE SWITCH STATEMENT')
+          unlockwallet('fullstackacademy', getinfo)
+          //  .then(getinfo());
+          // return sendMessage(senderPhone, messages.balance)
+          break
+        }
         case 'helpme':
           return sendMessage(senderPhone, messages.helpme)
         case 'send':
