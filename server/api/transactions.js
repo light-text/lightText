@@ -5,8 +5,19 @@ module.exports = router
 
 router.get('/', async (req, res, next) => {
   try {
-    const users = await Transactions.findAll()
-    res.json(users)
+    const receiver = await Transactions.findAll({
+      where: {
+        receiverId: req.user.id
+      },
+      include: ['sender']
+    })
+    const sender = await Transactions.findAll({
+      where: {
+        senderId: req.user.id
+      },
+      include: ['receiver']
+    })
+    res.json({receiver, sender})
   } catch (err) {
     next(err)
   }
