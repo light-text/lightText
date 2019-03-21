@@ -8,11 +8,11 @@ body {
 .navbar {
   /* background-color: #68bbe1; */
   background-color: white;
-  padding-top: 20px;
-  overflow: hidden;
-  position: fixed; /* Set the navbar to fixed position */
-  top: 0; /* Position the navbar at the top of the page */
-  width: 100%; /* Full width */
+  /* padding-top: 20px; */
+  /* overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%; */
 }
 
 .imageLogo {
