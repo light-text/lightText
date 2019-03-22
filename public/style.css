@@ -52,55 +52,6 @@ body {
   top: 10%;
 }
 
-.transactions {
-  position: absolute;
-  z-index: 100;
-  text-align: center;
-  left: 45%;
-  top: 20%;
-}
-
-#iphone {
-  margin-top: 150px;
-  position: relative;
-  text-align: center;
-  overflow: hidden;
-  position: fixed; /* Set the navbar to fixed position */
-  top: 0; /* Position the navbar at the top of the page */
-  width: 100%; /* Full width */
-  /* background-color: black; */
-}
-#iphoneImage {
-  /* position: absolute; */
-  text-align: center;
-  left: 0;
-  top: 0;
-}
-
-#welcome {
-  position: absolute;
-  z-index: 100;
-  text-align: center;
-  left: 45%;
-  top: 6%;
-}
-
-#balance {
-  position: absolute;
-  z-index: 100;
-  text-align: center;
-  left: 42%;
-  top: 20%;
-}
-
-#transactions {
-  position: absolute;
-  z-index: 100;
-  text-align: center;
-  left: 42%;
-  top: 30%;
-}
-
 #wholePage {
   display: flex;
   justify-content: space-between;
@@ -135,4 +86,20 @@ body {
 
 .userList {
   font-size: 10px;
+}
+
+.col-lg-6 {
+  background-color: #f3f9fb;
+  text-align: center;
+  margin-top: 20px;
+  align-content: center;
+}
+
+.myform {
+  width: 40%;
+  height: 40%;
+  margin: auto;
+}
+transaction {
+  display: inline;
 }
