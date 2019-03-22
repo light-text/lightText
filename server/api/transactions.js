@@ -17,7 +17,7 @@ router.get('/', async (req, res, next) => {
       },
       include: ['receiver']
     })
-    const message = req.user
+    const message = req.body.message
     res.json({receiver, sender, message})
   } catch (err) {
     next(err)

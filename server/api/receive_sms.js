@@ -84,7 +84,6 @@ const getBody = message => {
 }
 
 router.post('/', async (req, res, next) => {
-  req.user.message = 'hello'
   let body,
     action,
     amount,
@@ -153,40 +152,35 @@ router.post('/', async (req, res, next) => {
     }
 
     if (!sender) {
-      req.user.message = messages.signup
       return sendMessage(senderPhone, messages.signup)
     } else {
       switch (action) {
         case 'refill':
           setTimeout(() => {
-            req.user.message = 'yuweyrweuyriuwy469283479238749'
             return sendMessage(senderPhone, '46283hkehwejriy5i234982')
           }, 400)
-          req.user.message = messages.refill
+
           return sendMessage(senderPhone, messages.refill)
         case 'balance': {
           // console.log('YOU ARE IN BALANCE SWITCH STATEMENT')
           // unlockwallet('fullstackacademy', getinfo)
           //  .then(getinfo());
-          req.user.message = messages.balance
+
           sendMessage(senderPhone, messages.balance)
           break
         }
         case 'helpme':
-          req.user.message = messages.helpme
           return sendMessage(senderPhone, messages.helpme)
         case 'send':
           if (receiver === 'undefined') {
-            req.user.message = messages.receiver
             return sendMessage(senderPhone, messages.receiver)
           }
           if (!hasSufficientFunds) {
-            req.user.message = messages.insufficientBalance
             return sendMessage(senderPhone, messages.insufficientBalance)
           }
 
           sendMessage(senderPhone, messages.sent)
-          req.user.message = messages.sent
+
           sendMessage(ourReceiver.number || receiverPhone, messages.received)
           Transactions.create({
             amount: amount,
@@ -196,7 +190,6 @@ router.post('/', async (req, res, next) => {
 
           break
         default:
-          req.user.message = messages.messages.helpme
           sendMessage(senderPhone, messages.helpme)
       }
     }
