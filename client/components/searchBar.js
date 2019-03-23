@@ -38,7 +38,10 @@ class SearchBar extends React.Component {
           // value={this.props.allUsers}
         />
 
-        <div className={this.state.hideResults ? 'hidden' : ''}>
+        <div
+          className={this.state.hideResults ? 'hidden' : ''}
+          style={{backgroundColor: '#ECECEC'}}
+        >
           {this.props.allUsers
             .filter(item => {
               var re = new RegExp('^' + this.state.searchWord.toLowerCase())
