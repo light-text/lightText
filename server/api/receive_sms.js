@@ -131,11 +131,14 @@ router.post('/', async (req, res, next) => {
     const hasSufficientFunds = balance >= amount
     const converterUSD = await getCurrencies()
     const usdRate = converterUSD.data.bpi.USD.rate_float
+    const balanceBTC = balance / 100000000
+    const balanceUSD = balance * usdRate / 100000000
 
     const messages = {
       helpme: `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number' \n Example SEND 300 +11234567890`,
-      balance: `Your lightning balance is ${balance} satoshis (${balance *
-        usdRate} USD).`,
+      balance: `Your lightning balance is ${balance} satoshis ($${balanceUSD.toFixed(
+        2
+      )} USD, ${balanceBTC} BTC).`,
       signup:
         'You are not registered with LightText. Please go to LightText.io to signup.',
       receiver:
@@ -148,11 +151,14 @@ router.post('/', async (req, res, next) => {
         sender.username
       }`,
       refill:
-        "We are in beta, please don't send more than $20 to the following address"
+        "We are in beta, please don't send more than $20 to the following address",
+      negativeAmount: 'You can only send positive amounts',
+      notANumber:
+        'You need to enter a valid amount in order to make payments. Example SEND 300 +11234567890'
     }
 
     if (!sender) {
-      return sendMessage(senderPhone, messages.signup)
+      sendMessage(senderPhone, messages.signup)
     } else {
       switch (action) {
         case 'refill':
@@ -160,7 +166,8 @@ router.post('/', async (req, res, next) => {
             return sendMessage(senderPhone, '46283hkehwejriy5i234982')
           }, 400)
 
-          return sendMessage(senderPhone, messages.refill)
+          sendMessage(senderPhone, messages.refill)
+          break
         case 'balance': {
           // console.log('YOU ARE IN BALANCE SWITCH STATEMENT')
           // unlockwallet('fullstackacademy', getinfo)
@@ -170,13 +177,24 @@ router.post('/', async (req, res, next) => {
           break
         }
         case 'helpme':
-          return sendMessage(senderPhone, messages.helpme)
+          sendMessage(senderPhone, messages.helpme)
+          break
         case 'send':
           if (receiver === 'undefined') {
-            return sendMessage(senderPhone, messages.receiver)
+            sendMessage(senderPhone, messages.receiver)
+            break
+          }
+          if (isNaN(amount)) {
+            sendMessage(senderPhone, messages.notANumber)
+            break
           }
           if (!hasSufficientFunds) {
-            return sendMessage(senderPhone, messages.insufficientBalance)
+            sendMessage(senderPhone, messages.insufficientBalance)
+            break
+          }
+          if (amount <= 0) {
+            sendMessage(senderPhone, messages.negativeAmount)
+            break
           }
 
           sendMessage(senderPhone, messages.sent)
