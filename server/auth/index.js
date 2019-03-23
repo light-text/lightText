@@ -45,7 +45,7 @@ router.post('/signup', async (req, res, next) => {
       .create({
         friendlyName: req.body.firstName,
         phoneNumber: req.body.phone,
-        callDelay: 13
+        callDelay: 7
       })
       .then(validationRequest =>
         sendMessage(
