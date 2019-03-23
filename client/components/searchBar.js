@@ -7,18 +7,23 @@ class SearchBar extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      searchWord: ' '
-      // dropdown: ''
+      searchWord: '',
+      hideResults: true
     }
     this.handleChange = this.handleChange.bind(this)
   }
   async componentDidMount() {
     await this.props.getAllUsers()
-    console.log(this.props, 'heeeeere')
+  }
+  handleBlur = event => {
+    this.setState({
+      hideResults: true
+    })
   }
   handleChange = event => {
     this.setState({
-      searchWord: event.target.value
+      searchWord: event.target.value,
+      hideResults: false
     })
   }
   render() {
@@ -29,15 +34,15 @@ class SearchBar extends React.Component {
           name="search"
           placeholder="Find a username"
           onChange={this.handleChange}
+          onBlur={this.handleBlur}
           // value={this.props.allUsers}
         />
 
-        <div>
+        <div className={this.state.hideResults ? 'hidden' : ''}>
           {this.props.allUsers
             .filter(item => {
-              return item.username
-                .toLowerCase()
-                .includes(this.state.searchWord.toLowerCase())
+              var re = new RegExp('^' + this.state.searchWord.toLowerCase())
+              return re.test(item.username.toLowerCase())
             })
             .map(item => <p key={item.id}>{item.username}</p>)}
         </div>

@@ -1,10 +1,14 @@
 import React from 'react'
 // import {Link} from 'react-router-dom'
 import {Signup} from './signUp'
+import {SearchBar} from '.'
 
 export default function HomePage() {
   return (
     <div id="wholePage">
+      <div>
+        <SearchBar />
+      </div>
       <div className="instructionSignUp">
         <div className="instructions">
           <h3>How It Works</h3>
