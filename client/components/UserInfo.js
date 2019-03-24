@@ -23,12 +23,7 @@ export class UserInfo extends React.Component {
     })
   }
   render() {
-    console.log(this.props.history.transaction, 'Lets hope')
-    return (
-      <div>
-        <TransactionsTable transactions={this.state} userInfo={this.props} />
-      </div>
-    )
+    return <TransactionsTable transactions={this.state} userInfo={this.props} />
   }
 }
 

@@ -25,6 +25,9 @@ const Navbar = ({handleClick, isLoggedIn}) => (
             <Link className="links" to="#" onClick={handleClick}>
               Logout
             </Link>
+            <Link className="links" to="/FAQs">
+              FAQs
+            </Link>
           </div>
         </div>
       ) : (
@@ -33,9 +36,9 @@ const Navbar = ({handleClick, isLoggedIn}) => (
             <Link className="links" to="/login">
               Login
             </Link>
-            {/* <Link className="links" to="/signup">
-              Sign Up
-            </Link> */}
+            <Link className="links" to="/FAQs">
+              FAQs
+            </Link>
           </div>
         </div>
       )}

@@ -17,11 +17,20 @@ class MessageForm extends React.Component {
     const {handleSubmit, message} = this.props
     return (
       <div className="message-form">
-        <Form onSubmit={handleSubmit}>
-          <Form.Field>
-            <label>Message</label>
-            <input name="messages" placeholder="Your command" />
-          </Form.Field>
+        <p id="beforeBox">
+          You prefere to send a message from your account instead of a SMS ? It
+          is possible , use the box here !{' '}
+        </p>
+        <form onSubmit={handleSubmit} className="message">
+          <div className="ui input focus">
+            <label htmlFor="input_messages">Message</label>
+            <input
+              name="messages"
+              id="input_messages"
+              placeholder="Your command"
+              // style={{marginTop: '10px', marginLeft: '250px'}}
+            />
+          </div>
           <Button
             type="submit"
             onClick={() =>
@@ -33,7 +42,7 @@ class MessageForm extends React.Component {
           >
             Sent
           </Button>
-        </Form>
+        </form>
       </div>
     )
   }
