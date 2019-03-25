@@ -1,88 +1,35 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
-import {getTransactionThunk} from '../store/transactions'
-import Moment from 'react-moment'
-import 'moment-timezone'
-/**
- * COMPONENT
- */
-export class userHome extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      receiverTransaction: [],
-      senderTransaction: []
-    }
-  }
-  async componentDidMount() {
-    await this.props.getTransaction()
-    this.setState({
-      receiverTransaction: this.props.history.transaction.receiver,
-      senderTransaction: this.props.history.transaction.sender
-    })
-  }
+import UserInfo from '../components/UserInfo'
+import MessageForm from '../components/MessageForm'
+import BitcoinsInfo from '../components/BitcoinsInfo'
+import {SearchBar} from './'
+
+class userHome extends React.Component {
   render() {
-    const user = this.props.user
     return (
-      <div>
-        <div id="iphone">
-          <h3 id="welcome">Welcome, {user.username}</h3>
-          <p className="balance">Your balance : {user.balance} satoshis.</p>
-          <div>
-            <div className="transactions">
-              Your transactions :
-              <div>
-                Received from:
-                {this.state.receiverTransaction.map(element => (
-                  <li className="userList" key={element.id}>
-                    {element.sender.username}, amount : {element.amount},
-                    <Moment fromNow>{element.createdAt}</Moment>
-                  </li>
-                ))}
-              </div>
-              <div>
-                Sent to:
-                {this.state.senderTransaction.map(element => (
-                  <li className="userList" key={element.id}>
-                    {element.receiver.username}, amount : {element.amount},
-                    <Moment fromNow>{element.createdAt}</Moment>
-                  </li>
-                ))}
-              </div>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-lg-6 col-m-4 ">
+            <div>
+              <BitcoinsInfo />
             </div>
           </div>
-          <img
-            id="iphoneImage"
-            style={{width: 250, height: 501}}
-            src="/images/iphone.png"
-          />
+
+          <div className="col-lg-6 col-m-4 ">
+            <div className="myform">
+              <SearchBar />
+              <MessageForm />
+            </div>
+          </div>
         </div>
+        <UserInfo />
       </div>
     )
   }
 }
 
-/**
- * CONTAINER
- */
-const mapState = state => {
-  return {
-    user: state.user,
-    history: state.transactions
-  }
-}
-const dispatchMapState = dispatch => {
-  return {
-    getTransaction: () => dispatch(getTransactionThunk())
-  }
-}
+export default userHome
 
-export default connect(mapState, dispatchMapState)(userHome)
-
-/**
- * PROP TYPES
- */
-userHome.propTypes = {
-  email: PropTypes.string
+{
+  /* <UserInfo /> */
 }
