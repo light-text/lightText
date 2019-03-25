@@ -8,7 +8,21 @@ const client = require('twilio')(
   process.env.twilioAuthToken
 )
 const {User} = require('../db/models')
-const {unlockwallet, getinfo} = require('./crypto')
+const {
+  genSeed,
+  initWallet,
+  unlockwallet,
+  getinfo,
+  newAddress,
+  balance,
+  getPeers,
+  connect,
+  disconnect,
+  openChannel,
+  listChannels,
+  addInvoice,
+  sendPayment
+} = require('./crypto')
 const {Transactions} = require('../db/models')
 
 const twilioPhone = process.env.twilionumber
@@ -170,7 +184,6 @@ router.post('/', async (req, res, next) => {
           break
         case 'balance': {
           // console.log('YOU ARE IN BALANCE SWITCH STATEMENT')
-          // unlockwallet('fullstackacademy', getinfo)
           //  .then(getinfo());
 
           sendMessage(senderPhone, messages.balance)
