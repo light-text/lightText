@@ -1,14 +1,64 @@
 /* eslint-disable handle-callback-err */
 var fs = require('fs')
-var request = require('request')
-var macaroon = fs
+var grpc = require('grpc')
+process.env.GRPC_SSL_CIPHER_SUITES = 'HIGH+ECDSA'
+const lnService = require('ln-service')
+
+// port: 127.16.19.16:8080
+const basePort = 'https://5b8484b6.ngrok.io'
+// const basePort = 'https://192.168.1.1:8080'
+
+const macaroon = fs
   .readFileSync('server/api/testnet/admin.macaroon')
   .toString('hex')
+let metadata = new grpc.Metadata()
+metadata.add('macaroon', macaroon)
+let macaroonCreds = grpc.credentials.createFromMetadataGenerator(
+  (_args, callback) => {
+    callback(null, metadata)
+  }
+)
 
+const lndCert = fs.readFileSync(
+  '/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/tls (5).cert'
+)
+const lndKey = fs.readFileSync(
+  '/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/tls (1).key'
+)
+let sslCreds = grpc.credentials.createSsl(lndCert)
+let credentials = grpc.credentials.combineChannelCredentials(
+  sslCreds,
+  macaroonCreds
+)
+
+/*
+const base64Cert = require('/home/milanpatel/Documents/Capstone/li ghtText/server/api/testnet/base64tls.cert');
+const base64Macaroon = require('/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/base64Admin.macaroon');
+
+const lnd = lnService.lightningDaemon({
+  cert: base64Cert,
+  macaroon: base64Macaroon,
+  socket: `${basePort}`,
+});
+
+lnService.getWalletInfo({lnd}, (error, result) => {
+  console.log(result);
+});
+*/
+
+const lnrpcDescriptor = grpc.load('server/api/rpc.proto')
+const lnrpc = lnrpcDescriptor.lnrpc
+
+const request = require('request')
+
+const lightning = new lnrpc.Lightning(`${basePort}`, credentials)
+
+/*
+lightning.getinfo(request, function(err, response) {
+  console.log(response);
+})
+*/
 // wallet_password: 'fullstackacademy'
-// port: 127.16.19.16:8080
-const basePort = 'http://36647f82.ngrok.io'
-//const basePort = 'https://192.168.1.1:8080'
 
 const genSeed = () => {
   let options = {
@@ -74,11 +124,16 @@ const getinfo = () => {
       'Grpc-Metadata-macaroon': macaroon
     }
   }
+  lightning.getInfo({}, function(err, response) {
+    console.log('GetInfo:', response)
+    console.error(err)
+  })
 
-  request.get(options, function(error, response, body) {
+  /* lightning.getinfo()
+  get(options, function(error, response, body) {
     console.log(body)
     console.error(error)
-  })
+  }) */
 }
 
 const newAddress = () => {
@@ -290,5 +345,6 @@ module.exports = {
   openChannel,
   listChannels,
   addInvoice,
-  sendPayment
+  sendPayment,
+  lightning
 }
