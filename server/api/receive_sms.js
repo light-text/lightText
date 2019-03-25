@@ -168,7 +168,8 @@ router.post('/', async (req, res, next) => {
         "We are in beta, please don't send more than $20 to the following address",
       negativeAmount: 'You can only send positive amounts',
       notANumber:
-        'You need to enter a valid amount in order to make payments. Example SEND 300 +11234567890'
+        'You need to enter a valid amount in order to make payments. Example SEND 300 +11234567890',
+      fractionAmount: `You can't send fractional satoshis. please send a valid amount`
     }
 
     if (!sender) {
@@ -207,6 +208,10 @@ router.post('/', async (req, res, next) => {
           }
           if (amount <= 0) {
             sendMessage(senderPhone, messages.negativeAmount)
+            break
+          }
+          if (n % 1 === 0) {
+            sendMessage(senderPhone, messages.fractionAmount)
             break
           }
 
