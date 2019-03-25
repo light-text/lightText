@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+//import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {getTransactionThunk} from '../store/transactions'
 import TransactionsTable from '../components/Transactions'
@@ -23,7 +23,12 @@ export class UserInfo extends React.Component {
     })
   }
   render() {
-    return <TransactionsTable transactions={this.state} userInfo={this.props} />
+    return (
+      <div>
+        <TransactionsTable transactions={this.state} userInfo={this.props} />
+      </div>
+    )
+
   }
 }
 
@@ -44,9 +49,8 @@ const dispatchMapState = dispatch => {
 
 export default connect(mapState, dispatchMapState)(UserInfo)
 
-/**
- * PROP TYPES
- */
+// PROP TYPES
+
 // UserInfo.propTypes = {
 //   email: PropTypes.string
-// }
+//  }
