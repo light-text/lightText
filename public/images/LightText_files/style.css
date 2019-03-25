@@ -1,0 +1,138 @@
+body {
+  font-family: sans-serif;
+  background-color: #f3f9fb;
+  font-family: 'Montserrat', sans-serif;
+  /* margin-left: 3%;
+  margin-right: 3%; */
+}
+.navbar {
+  /* background-color: #68bbe1; */
+  background-color: white;
+  /* padding-top: 20px; */
+  /* overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%; */
+}
+
+.imageLogo {
+  width: 50px;
+  height: 50px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  margin-left: 40px;
+}
+
+.title {
+  flex: 0.5;
+  margin-top: 5;
+  color: #68bbe1;
+  font-family: 'Fredoka One', cursive;
+  font-size: 2.5rem;
+}
+
+.link {
+  font-size: 1.3rem;
+  text-align: right;
+  padding-bottom: 10px;
+}
+.links {
+  color: #68bbe1;
+  margin-right: 20px;
+}
+
+.balance {
+  position: absolute;
+  z-index: 100;
+  text-align: center;
+  left: 45%;
+  top: 10%;
+}
+
+.transactions {
+  position: absolute;
+  z-index: 100;
+  text-align: center;
+  left: 45%;
+  top: 20%;
+}
+
+#iphone {
+  margin-top: 150px;
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */
+  /* background-color: black; */
+}
+#iphoneImage {
+  /* position: absolute; */
+  text-align: center;
+  left: 0;
+  top: 0;
+}
+
+#welcome {
+  position: absolute;
+  z-index: 100;
+  text-align: center;
+  left: 45%;
+  top: 6%;
+}
+
+#balance {
+  position: absolute;
+  z-index: 100;
+  text-align: center;
+  left: 42%;
+  top: 20%;
+}
+
+#transactions {
+  position: absolute;
+  z-index: 100;
+  text-align: center;
+  left: 42%;
+  top: 30%;
+}
+
+#wholePage {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 100px;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+.instructions {
+  margin-top: 40px;
+  margin-right: 250px;
+}
+.instructions h3 {
+  font-size: 40px;
+}
+.text {
+  font-size: 17px;
+}
+.instructionSignUp {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin-left: 40px;
+}
+.signUp {
+  margin-right: 350px;
+  margin-top: 90px;
+}
+.iphoneHome {
+  margin-top: 50px;
+  align-items: left;
+}
+
+.userList {
+  font-size: 10px;
+}
