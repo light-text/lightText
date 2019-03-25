@@ -1,6 +1,9 @@
 import React from 'react'
 import UserInfo from '../components/UserInfo'
 import MessageForm from '../components/MessageForm'
+import BitcoinsInfo from '../components/BitcoinsInfo'
+import {SearchBar} from './'
+
 class userHome extends React.Component {
   render() {
     return (
@@ -8,20 +11,18 @@ class userHome extends React.Component {
         <div className="row">
           <div className="col-lg-6 col-m-4 ">
             <div>
-              <h1>Hello</h1>
+              <BitcoinsInfo />
             </div>
           </div>
 
           <div className="col-lg-6 col-m-4 ">
             <div className="myform">
+              <SearchBar />
               <MessageForm />
             </div>
           </div>
-
-          <div>
-            <UserInfo />
-          </div>
         </div>
+        <UserInfo />
       </div>
     )
   }

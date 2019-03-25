@@ -1,5 +1,5 @@
 import React from 'react'
-
+import {input} from 'semantic-ui-react'
 import {connect} from 'react-redux'
 import {getAllUsersThunks} from '../store/allUsers'
 
@@ -29,26 +29,32 @@ class SearchBar extends React.Component {
   render() {
     return (
       <div>
-        <input
-          type="text"
-          name="search"
-          placeholder="Find a username"
-          onChange={this.handleChange}
-          onBlur={this.handleBlur}
-          // value={this.props.allUsers}
-        />
+        <h1 id="title">Find a title</h1>
+        <p id="findUsername">
+          You are looking for a user and you do not remember his username ? Find
+          it here !
+        </p>
+        <form className="username">
+          <div className="ui input focus">
+            <input
+              type="text"
+              name="search"
+              placeholder="Find a username"
+              onChange={this.handleChange}
+              onBlur={this.handleBlur}
+              // value={this.props.allUsers}
+            />
+          </div>
+          <div className={this.state.hideResults ? 'hidden' : ''}>
+            {this.props.allUsers
+              .filter(item => {
+                var re = new RegExp('^' + this.state.searchWord.toLowerCase())
+                return re.test(item.username.toLowerCase())
+              })
+              .map(item => <p key={item.id}>{item.username}</p>)}
+          </div>
+        </form>
 
-        <div
-          className={this.state.hideResults ? 'hidden' : ''}
-          style={{backgroundColor: '#ECECEC'}}
-        >
-          {this.props.allUsers
-            .filter(item => {
-              var re = new RegExp('^' + this.state.searchWord.toLowerCase())
-              return re.test(item.username.toLowerCase())
-            })
-            .map(item => <p key={item.id}>{item.username}</p>)}
-        </div>
       </div>
     )
   }
