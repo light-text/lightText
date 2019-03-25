@@ -2,7 +2,7 @@
 var fs = require('fs')
 var grpc = require('grpc')
 process.env.GRPC_SSL_CIPHER_SUITES = 'HIGH+ECDSA'
-const lnService = require('ln-service')
+// const lnService = require('ln-service')
 
 // port: 127.16.19.16:8080
 const basePort = 'https://5b8484b6.ngrok.io'
@@ -20,10 +20,10 @@ let macaroonCreds = grpc.credentials.createFromMetadataGenerator(
 )
 
 const lndCert = fs.readFileSync(
-  '/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/tls (5).cert'
+  '/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/tls (6).cert'
 )
 const lndKey = fs.readFileSync(
-  '/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/tls (1).key'
+  '/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/tls (2).key'
 )
 let sslCreds = grpc.credentials.createSsl(lndCert)
 let credentials = grpc.credentials.combineChannelCredentials(
