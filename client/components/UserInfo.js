@@ -28,6 +28,7 @@ export class UserInfo extends React.Component {
         <TransactionsTable transactions={this.state} userInfo={this.props} />
       </div>
     )
+
   }
 }
 
