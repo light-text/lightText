@@ -1,74 +1,15 @@
 /* eslint-disable handle-callback-err */
 
 var fs = require('fs')
-var grpc = require('grpc')
-/* process.env.GRPC_SSL_CIPHER_SUITES = 'HIGH+ECDSA'
- // const lnService = require('ln-service')
+const request = require('request')
 
-// port: 127.16.19.16:8080
-const basePort = 'https://5b8484b6.ngrok.io'
+const basePort = 'https://localhost:8080'
 // const basePort = 'https://192.168.1.1:8080'
+const walletPassword = 'hello'
 
 const macaroon = fs
   .readFileSync('server/api/testnet/admin.macaroon')
   .toString('hex')
-let metadata = new grpc.Metadata()
-metadata.add('macaroon', macaroon)
-let macaroonCreds = grpc.credentials.createFromMetadataGenerator(
-  (_args, callback) => {
-    callback(null, metadata)
-  }
-)
-
-
-
-const lndCert = fs.readFileSync(
-  '/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/tls (5).cert'
-)
-const lndKey = fs.readFileSync(
-  '/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/tls (1).key'
-)
-let sslCreds = grpc.credentials.createSsl(lndCert)
-let credentials = grpc.credentials.combineChannelCredentials(
-  sslCreds,
-  macaroonCreds
-)
-
-*/
-
-/*
-const base64Cert = require('/home/milanpatel/Documents/Capstone/li ghtText/server/api/testnet/base64tls.cert');
-const base64Macaroon = require('/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/base64Admin.macaroon');
-
-const lnd = lnService.lightningDaemon({
-  cert: base64Cert,
-  macaroon: base64Macaroon,
-  socket: `${basePort}`,
-});
-
-lnService.getWalletInfo({lnd}, (error, result) => {
-  console.log(result);
-});
-*/
-
-/*
-const lnrpcDescriptor = grpc.load('server/api/rpc.proto')
-const lnrpc = lnrpcDescriptor.lnrpc
-
-const request = require('request')
-
-const lightning = new lnrpc.Lightning(`${basePort}`, credentials)
-
-*/
-
-/*
-lightning.getinfo(request, function(err, response) {
-  console.log(response);
-})
-*/
-// wallet_password: 'fullstackacademy'
-
-/*
 
 const genSeed = () => {
   let options = {
@@ -134,19 +75,14 @@ const getinfo = () => {
       'Grpc-Metadata-macaroon': macaroon
     }
   }
-  lightning.getInfo({}, function(err, response) {
-    console.log('GetInfo:', response)
-    console.error(err)
-  })
 
-  /* lightning.getinfo()
-  get(options, function(error, response, body) {
+  request.get(options, function(error, response, body) {
     console.log(body)
     console.error(error)
-  }) 
+  })
 }
-*/
 
+// newAddress() returns the a new Bitcoin address for refills
 const newAddress = () => {
   let options = {
     url: 'https://127.16.19.16:8080/v1/newaddress',
@@ -195,9 +131,9 @@ const getPeers = () => {
 }
 
 // connect() establishes a connection to remote peers
-const connect = () => {
+const connect = addr => {
   let requestBody = {
-    addr: '',
+    addr: addr,
     perm: true
   }
   let options = {
@@ -216,9 +152,9 @@ const connect = () => {
 }
 
 // disconnect() destorys a connection to a specified remote peer
-const disconnect = () => {
+const disconnect = addr => {
   let options = {
-    url: 'https://localhost:8080/v1/peers/{pub_key}',
+    url: `https://localhost:8080/v1/peers/${addr}`,
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
@@ -227,36 +163,6 @@ const disconnect = () => {
     }
   }
   request.delete(options, function(error, response, body) {
-    console.log(body)
-  })
-}
-
-// openChannel() returns the wallet balance
-const openChannel = () => {
-  let requestBody = {
-    node_pubkey: 1,
-    node_pubkey_string: '',
-    local_funding_amount: '',
-    push_sat: '',
-    target_conf: '',
-    sat_per_byte: '',
-    private: false,
-    min_htlc_msat: '',
-    remote_csv_delay: '',
-    min_confs: 1,
-    spend_unconfirmed: false
-  }
-  let options = {
-    url: 'https://localhost:8001/v1/newaddress',
-    // Work-around for self-signed certificates.
-    rejectUnauthorized: false,
-    json: true,
-    headers: {
-      'Grpc-Metadata-macaroon': macaroon
-    },
-    form: JSON.stringify(requestBody)
-  }
-  request.get(options, function(error, response, body) {
     console.log(body)
   })
 }
@@ -277,30 +183,49 @@ const listChannels = () => {
   })
 }
 
-const addInvoice = () => {
+// openChannel() opens a channel with the specified node
+const openChannel = (addr, amount) => {
   let requestBody = {
-    memo: '',
-    receipt: 1,
-    r_preimage: 1,
-    r_hash: 1,
-    value: '',
-    settled: false,
-    creation_date: '',
-    settle_date: '',
-    payment_request: '',
-    description_hash: '',
-    expiry: '',
-    fallback_addr: '',
-    cltv_expiry: '',
-    route_hints: [],
-    private: false,
-    add_index: '',
-    settle_index: '',
-    amt_paid: '',
-    amt_paid_sat: '',
-    amt_paid_msat: '',
-    state: ''
+    node_pubkey: addr,
+    local_funding_amount: amount
   }
+  let options = {
+    url: 'https://localhost:8001/v1/channels',
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    },
+    form: JSON.stringify(requestBody)
+  }
+  request.post(options, function(error, response, body) {
+    console.log(body)
+  })
+}
+
+// getInvoice() returns an invoice based on a payment hash - payRequest must be exactly 32 bytes
+const getInvoice = payRequest => {
+  let options = {
+    url: `https://localhost:8080/v1/invoices/${payRequest}`,
+    // requires payment hash in URL above
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    }
+  }
+  request.post(options, function(error, response, body) {
+    console.log(body)
+  })
+}
+
+const addInvoice = amount => {
+  let requestBody = {
+    value: amount
+  }
+
   let options = {
     url: 'https://localhost:8080/v1/invoices',
     // Work-around for self-signed certificates.
@@ -316,20 +241,14 @@ const addInvoice = () => {
   })
 }
 
-const sendPayment = () => {
+// sendPayment() uses the invoice payment request to send a payment
+const sendPayment = invoice => {
   let requestBody = {
-    dest: 1,
-    dest_string: '',
-    amt: '',
-    payment_hash: 1,
-    payment_hash_string: '',
-    payment_request: '',
-    final_cltv_delta: 1,
-    fee_limit: '',
-    outgoing_chan_id: ''
+    payment_request: invoice
   }
+
   let options = {
-    url: 'https://localhost:8080/v1/invoices',
+    url: 'https://localhost:8080/v1/channels/transactions',
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
@@ -343,7 +262,6 @@ const sendPayment = () => {
   })
 }
 
-/*
 module.exports = {
   genSeed,
   initWallet,
@@ -356,7 +274,7 @@ module.exports = {
   disconnect,
   openChannel,
   listChannels,
+  getInvoice,
   addInvoice,
-  sendPayment,
-  lightning
-}*/
+  sendPayment
+}
