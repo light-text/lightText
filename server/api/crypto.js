@@ -7,6 +7,9 @@ var macaroon = fs
 
 // wallet_password: 'fullstackacademy'
 // port: 127.16.19.16:8080
+const basePort = 'http://36647f82.ngrok.io'
+//const basePort = 'https://192.168.1.1:8080'
+
 const genSeed = () => {
   let options = {
     url: 'https://127.16.19.16:8080/v1/genseed',
@@ -47,7 +50,7 @@ const unlockwallet = (password, cb) => {
     wallet_password: Buffer.from(password).toString('base64')
   }
   let options = {
-    url: 'https://88506b5d.ngrok.io/v1/unlockwallet',
+    url: `${basePort}/v1/unlockwallet`,
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
@@ -63,7 +66,7 @@ const unlockwallet = (password, cb) => {
 
 const getinfo = () => {
   let options = {
-    url: 'https://88506b5d.ngrok.io/v1/getinfo',
+    url: `${basePort}/v1/getinfo`,
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
