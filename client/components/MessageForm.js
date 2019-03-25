@@ -3,18 +3,30 @@ import {Button, Form} from 'semantic-ui-react'
 import {connect} from 'react-redux'
 import {postMessageThunk} from '../store/transactions'
 import {withToastManager} from 'react-toast-notifications'
-import {getTransactionThunk} from '../store/transactions'
 
 class MessageForm extends React.Component {
   constructor(props) {
     super(props)
+    this.getMessageStatus = this.getMessageStatus.bind(this)
+  }
+  getMessageStatus(message) {
+    if (
+      message.startsWith('You have insufficient') ||
+      message.startsWith('The user you are trying') ||
+      message.startsWith('We are in beta') ||
+      message.startsWith('You need to enter') ||
+      message.startsWith('You are not registered') ||
+      message.startsWith('You can only send')
+    ) {
+      return 'warning'
+    } else {
+      return 'success'
+    }
   }
 
-  componentDidMount() {
-    this.props.getMessage()
-  }
   render() {
-    const {handleSubmit, message} = this.props
+    const {handleSubmit} = this.props
+    console.log(this.getMessageStatus(this.props.message), 'getMessageStatus')
     return (
       <div className="message-form">
         <Form onSubmit={handleSubmit}>
@@ -25,10 +37,12 @@ class MessageForm extends React.Component {
           <Button
             type="submit"
             onClick={() =>
-              this.props.toastManager.add('ROROROROOROROR', {
-                appearance: 'success',
-                autoDismiss: true
-              })
+              setTimeout(() => {
+                this.props.toastManager.add(this.props.message, {
+                  appearance: this.getMessageStatus(this.props.message),
+                  autoDismiss: true
+                })
+              }, 1100)
             }
           >
             Sent
@@ -46,7 +60,6 @@ const mapProps = state => {
 
 const mapDispatch = dispatch => {
   return {
-    getMessage: () => dispatch(getTransactionThunk),
     handleSubmit(evt) {
       evt.preventDefault()
       const messages = evt.target.messages.value

@@ -9,49 +9,54 @@ const TransactionsTable = props => {
 
   return (
     <div className="container-fluid transaction">
-      <Table collapsing>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>Amount</Table.HeaderCell>
-            <Table.HeaderCell>Date</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
+      <div className="row">
+        <div className="col-lg-6 col-m-4">
+          <Table collapsing>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Name</Table.HeaderCell>
+                <Table.HeaderCell>Amount</Table.HeaderCell>
+                <Table.HeaderCell>Date</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
 
-        {receiverTransaction.map((transaction, i) => {
-          return (
-            <Table.Row key={i}>
-              <Table.Cell>{transaction.sender.username}</Table.Cell>
-              <Table.Cell>{transaction.amount} satoshis</Table.Cell>
-              <Table.Cell>
-                <Moment fromNow>{transaction.createdAt}</Moment>
-              </Table.Cell>
-            </Table.Row>
-          )
-        })}
-      </Table>
+            {receiverTransaction.map((transaction, i) => {
+              return (
+                <Table.Row key={i}>
+                  <Table.Cell>{transaction.sender.username}</Table.Cell>
+                  <Table.Cell>{transaction.amount} satoshis</Table.Cell>
+                  <Table.Cell>
+                    <Moment fromNow>{transaction.createdAt}</Moment>
+                  </Table.Cell>
+                </Table.Row>
+              )
+            })}
+          </Table>
+        </div>
+        <div className="col-lg-6 col-m-4">
+          <Table collapsing>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Name</Table.HeaderCell>
+                <Table.HeaderCell>Amount</Table.HeaderCell>
+                <Table.HeaderCell>Date</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
 
-      <Table collapsing>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>Amount</Table.HeaderCell>
-            <Table.HeaderCell>Date</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-
-        {senderTransaction.map((transaction, i) => {
-          return (
-            <Table.Row key={i}>
-              <Table.Cell>{transaction.receiver.username}</Table.Cell>
-              <Table.Cell>{transaction.amount} satoshis</Table.Cell>
-              <Table.Cell>
-                <Moment fromNow>{transaction.createdAt}</Moment>
-              </Table.Cell>
-            </Table.Row>
-          )
-        })}
-      </Table>
+            {senderTransaction.map((transaction, i) => {
+              return (
+                <Table.Row key={i}>
+                  <Table.Cell>{transaction.receiver.username}</Table.Cell>
+                  <Table.Cell>{transaction.amount} satoshis</Table.Cell>
+                  <Table.Cell>
+                    <Moment fromNow>{transaction.createdAt}</Moment>
+                  </Table.Cell>
+                </Table.Row>
+              )
+            })}
+          </Table>
+        </div>
+      </div>
     </div>
   )
 }

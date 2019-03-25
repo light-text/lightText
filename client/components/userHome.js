@@ -18,7 +18,7 @@ class userHome extends React.Component {
             </div>
           </div>
 
-          <div>
+          <div className="col-lg-6 col-m-4 ">
             <UserInfo />
           </div>
         </div>
@@ -28,7 +28,3 @@ class userHome extends React.Component {
 }
 
 export default userHome
-
-{
-  /* <UserInfo /> */
-}

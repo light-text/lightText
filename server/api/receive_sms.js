@@ -90,7 +90,8 @@ router.post('/', async (req, res, next) => {
     receiverPhone,
     senderPhone,
     webUserName,
-    messageFromWeb
+    messageFromWeb,
+    toastMessage
 
   if (req.body.messages) {
     messageFromWeb = await findUserByUsername(getBody(req.body.messages)[2])
@@ -158,45 +159,52 @@ router.post('/', async (req, res, next) => {
     }
 
     if (!sender) {
+      toastMessage = messages.signup
       sendMessage(senderPhone, messages.signup)
     } else {
       switch (action) {
         case 'refill':
           setTimeout(() => {
+            toastMessage = '46283hkehwejriy5i234982' // something to check later.
             return sendMessage(senderPhone, '46283hkehwejriy5i234982')
           }, 400)
-
+          toastMessage = messages.refill
           sendMessage(senderPhone, messages.refill)
           break
         case 'balance': {
           // console.log('YOU ARE IN BALANCE SWITCH STATEMENT')
           // unlockwallet('fullstackacademy', getinfo)
           //  .then(getinfo());
-
+          toastMessage = messages.balance
           sendMessage(senderPhone, messages.balance)
           break
         }
         case 'helpme':
+          toastMessage = messages.helpme
           sendMessage(senderPhone, messages.helpme)
           break
         case 'send':
           if (receiver === 'undefined') {
+            toastMessage = message.receiver
             sendMessage(senderPhone, messages.receiver)
             break
           }
           if (isNaN(amount)) {
+            toastMessage = messages.notANumber
             sendMessage(senderPhone, messages.notANumber)
             break
           }
           if (!hasSufficientFunds) {
+            toastMessage = messages.insufficientBalance
             sendMessage(senderPhone, messages.insufficientBalance)
             break
           }
           if (amount <= 0) {
+            toastMessage = messages.negativeAmount
             sendMessage(senderPhone, messages.negativeAmount)
             break
           }
-
+          toastMessage = messages.sent
           sendMessage(senderPhone, messages.sent)
 
           sendMessage(ourReceiver.number || receiverPhone, messages.received)
@@ -205,13 +213,14 @@ router.post('/', async (req, res, next) => {
             receiverId: ourReceiver.userId || messageFromWeb.userId,
             senderId: sender['id']
           })
-
           break
         default:
           sendMessage(senderPhone, messages.helpme)
       }
     }
-    res.writeHead(200, {'Content-Type': 'text/xml'})
+    res.send(toastMessage)
+    toastMessage = 'default'
+    // res.writeHead(200, {'Content-Type': 'text/xml'})
     res.end(twiml.toString())
   } catch (err) {
     console.error(err)
