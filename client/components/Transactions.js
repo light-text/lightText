@@ -4,6 +4,7 @@ import Moment from 'react-moment'
 import 'moment-timezone'
 
 const TransactionsTable = props => {
+  console.log(props)
   const receiverTransaction = props.transactions.receiverTransaction
   const senderTransaction = props.transactions.senderTransaction
   let receiverTransactionHtml = (

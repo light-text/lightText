@@ -54,7 +54,6 @@ class SearchBar extends React.Component {
               .map(item => <p key={item.id}>{item.username}</p>)}
           </div>
         </form>
-
       </div>
     )
   }
