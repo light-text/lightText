@@ -1,8 +1,9 @@
 /* eslint-disable handle-callback-err */
+
 var fs = require('fs')
 var grpc = require('grpc')
-process.env.GRPC_SSL_CIPHER_SUITES = 'HIGH+ECDSA'
-const lnService = require('ln-service')
+/* process.env.GRPC_SSL_CIPHER_SUITES = 'HIGH+ECDSA'
+ // const lnService = require('ln-service')
 
 // port: 127.16.19.16:8080
 const basePort = 'https://5b8484b6.ngrok.io'
@@ -19,6 +20,8 @@ let macaroonCreds = grpc.credentials.createFromMetadataGenerator(
   }
 )
 
+
+
 const lndCert = fs.readFileSync(
   '/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/tls (5).cert'
 )
@@ -30,6 +33,8 @@ let credentials = grpc.credentials.combineChannelCredentials(
   sslCreds,
   macaroonCreds
 )
+
+*/
 
 /*
 const base64Cert = require('/home/milanpatel/Documents/Capstone/li ghtText/server/api/testnet/base64tls.cert');
@@ -46,6 +51,7 @@ lnService.getWalletInfo({lnd}, (error, result) => {
 });
 */
 
+/*
 const lnrpcDescriptor = grpc.load('server/api/rpc.proto')
 const lnrpc = lnrpcDescriptor.lnrpc
 
@@ -53,12 +59,16 @@ const request = require('request')
 
 const lightning = new lnrpc.Lightning(`${basePort}`, credentials)
 
+*/
+
 /*
 lightning.getinfo(request, function(err, response) {
   console.log(response);
 })
 */
 // wallet_password: 'fullstackacademy'
+
+/*
 
 const genSeed = () => {
   let options = {
@@ -133,8 +143,9 @@ const getinfo = () => {
   get(options, function(error, response, body) {
     console.log(body)
     console.error(error)
-  }) */
+  }) 
 }
+*/
 
 const newAddress = () => {
   let options = {
@@ -332,6 +343,7 @@ const sendPayment = () => {
   })
 }
 
+/*
 module.exports = {
   genSeed,
   initWallet,
@@ -347,4 +359,4 @@ module.exports = {
   addInvoice,
   sendPayment,
   lightning
-}
+}*/
