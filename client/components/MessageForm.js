@@ -1,7 +1,7 @@
 import React from 'react'
 import {Button, Form} from 'semantic-ui-react'
 import {connect} from 'react-redux'
-import {postMessageThunk} from '../store/transactions'
+import {postMessageThunk, getTransactionsThunk} from '../store/transactions'
 import {withToastManager} from 'react-toast-notifications'
 
 class MessageForm extends React.Component {
@@ -9,6 +9,11 @@ class MessageForm extends React.Component {
     super(props)
     this.getMessageStatus = this.getMessageStatus.bind(this)
   }
+
+  componentDidUpdate() {
+    this.props.transactions()
+  }
+
   getMessageStatus(message) {
     if (
       message.startsWith('You have insufficient') ||
@@ -69,6 +74,7 @@ const mapProps = state => {
 
 const mapDispatch = dispatch => {
   return {
+    transactions: () => dispatch(getTransactionsThunk()),
     handleSubmit(evt) {
       evt.preventDefault()
       const messages = evt.target.messages.value

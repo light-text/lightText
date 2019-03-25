@@ -1,16 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {auth} from '../store'
-import {Link} from 'react-router-dom'
-import {
-  Button,
-  Form,
-  Grid,
-  Header,
-  Image,
-  Message,
-  Segment
-} from 'semantic-ui-react'
+//import {Link} from 'react-router-dom'
+import {Button, Form, Grid, Header, Image, Segment} from 'semantic-ui-react'
 
 /**
  * COMPONENT
@@ -35,6 +27,7 @@ const SignUp = props => {
       <Grid textAlign="center" style={{height: '100%'}} verticalAlign="middle">
         <Grid.Column style={{maxWidth: 450}}>
           <Header as="h2" color="blue" textAlign="center">
+            <Image src="/images/lightbulb.png" />
             {displayName} to your account
           </Header>
           <Form size="large" onSubmit={handleSubmit} name={name}>
@@ -84,7 +77,6 @@ const SignUp = props => {
                 type="password"
                 required
               />
-
               <Button type="submit" color="blue" fluid size="large">
                 Sign Up
               </Button>
