@@ -15,7 +15,7 @@ class SearchBar extends React.Component {
   async componentDidMount() {
     await this.props.getAllUsers()
   }
-  handleBlur = event => {
+  handleBlur = () => {
     this.setState({
       hideResults: true
     })
@@ -54,7 +54,6 @@ class SearchBar extends React.Component {
               .map(item => <p key={item.id}>{item.username}</p>)}
           </div>
         </form>
-
       </div>
     )
   }

@@ -161,8 +161,8 @@ router.post('/', async (req, res, next) => {
       insufficientBalance:
         'You have insufficient funds. Please enter REFILL to up your funding.',
       sent: `Boom. You made a lightning fast payment to ${ourReceiver.userName ||
-        webUserName} for ${amount}`,
-      received: `Boom. You received a lightning fast payment for ${amount} from ${
+        webUserName} for ${amount} Satoshis`,
+      received: `Boom. You received a lightning fast payment for ${amount} Satoshis from ${
         sender.username
       }`,
       refill:
