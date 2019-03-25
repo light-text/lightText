@@ -21,6 +21,7 @@ class userHome extends React.Component {
               <MessageForm />
             </div>
           </div>
+
         </div>
         <UserInfo />
       </div>
@@ -29,7 +30,3 @@ class userHome extends React.Component {
 }
 
 export default userHome
-
-{
-  /* <UserInfo /> */
-}
