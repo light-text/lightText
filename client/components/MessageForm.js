@@ -23,7 +23,7 @@ class MessageForm extends React.Component {
       return 'success'
     }
   }
-
+  //Hello
   render() {
     const {handleSubmit} = this.props
     console.log(this.getMessageStatus(this.props.message), 'getMessageStatus')
