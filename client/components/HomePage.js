@@ -29,13 +29,35 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="iphoneHome">
+        <div
+          className="iphoneHome"
+          style={{
+            position: 'relative',
+            display: 'inline'
+          }}
+        >
+          <img
+            src="/images/lightText.gif"
+            style={{
+              width: 227,
+              height: 490,
+              position: 'absolute',
+              left: '4%',
+              zIndex: '-1'
+            }}
+          />
           <img
             className="iphoneImg"
             src="/images/iphone.png"
-            style={{width: 250, height: 501}}
+            style={{
+              width: 250,
+              height: 501
+              // background: `url('/images/workflowLightText.gif')`,
+              // backgroundSize: '100% 100%',
+            }}
           />
         </div>
+
         <div />
       </div>
       <div className="bottomDiv">

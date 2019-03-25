@@ -21,7 +21,15 @@ class userHome extends React.Component {
               <MessageForm />
             </div>
           </div>
+        </div>
 
+        <div>
+          <iframe
+            frameBorder="0"
+            scrolling="no"
+            src="https://interactive-bitcoin-price-chart-yenswahhtb.now.sh/"
+            style={{width: '100%', height: '550px', overflow: 'hidden'}}
+          />
         </div>
         <UserInfo />
       </div>
