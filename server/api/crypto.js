@@ -3,13 +3,11 @@
 var fs = require('fs')
 const request = require('request')
 
-const basePort = 'https://localhost:8080'
+const basePort = 'https://127.0.0.1:8081'
 // const basePort = 'https://192.168.1.1:8080'
 const walletPassword = 'hello'
 
-const macaroon = fs
-  .readFileSync('server/api/testnet/admin.macaroon')
-  .toString('hex')
+const macaroon = fs.readFileSync('server/api/admin.macaroon').toString('hex')
 
 const genSeed = () => {
   let options = {
@@ -85,7 +83,7 @@ const getinfo = () => {
 // newAddress() returns the a new Bitcoin address for refills
 const newAddress = () => {
   let options = {
-    url: 'https://127.16.19.16:8080/v1/newaddress',
+    url: `${basePort}/v1/newaddress`,
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
@@ -101,7 +99,7 @@ const newAddress = () => {
 // balance() returns the wallet balance
 const balance = () => {
   let options = {
-    url: 'https://localhost:8080/v1/balance/blockchain',
+    url: `${basePort}/v1/balance/blockchain`,
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
@@ -117,7 +115,7 @@ const balance = () => {
 // getPeers() lists all currently active peers
 const getPeers = () => {
   let options = {
-    url: 'https://localhost:8080/v1/peers',
+    url: `${basePort}/v1/peers`,
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
@@ -130,6 +128,10 @@ const getPeers = () => {
   })
 }
 
+/*
+CONNECT NEEDS EDITING TO URL PATH
+
+*/
 // connect() establishes a connection to remote peers
 const connect = addr => {
   let requestBody = {
@@ -137,7 +139,7 @@ const connect = addr => {
     perm: true
   }
   let options = {
-    url: 'https://localhost:8001/v1/newaddress',
+    url: `${basePort}/v1/newaddress`,
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
@@ -154,7 +156,7 @@ const connect = addr => {
 // disconnect() destorys a connection to a specified remote peer
 const disconnect = addr => {
   let options = {
-    url: `https://localhost:8080/v1/peers/${addr}`,
+    url: `${basePort}/v1/peers/${addr}`,
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
@@ -170,7 +172,7 @@ const disconnect = addr => {
 // listChannels() returns currently open channels with the node
 const listChannels = () => {
   let options = {
-    url: 'https://localhost:8080/v1/channels',
+    url: `${basePort}/v1/channels`,
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
@@ -190,7 +192,7 @@ const openChannel = (addr, amount) => {
     local_funding_amount: amount
   }
   let options = {
-    url: 'https://localhost:8001/v1/channels',
+    url: `${basePort}/v1/channels`,
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
@@ -207,7 +209,7 @@ const openChannel = (addr, amount) => {
 // getInvoice() returns an invoice based on a payment hash - payRequest must be exactly 32 bytes
 const getInvoice = payRequest => {
   let options = {
-    url: `https://localhost:8080/v1/invoices/${payRequest}`,
+    url: `${basePort}/v1/invoices/${payRequest}`,
     // requires payment hash in URL above
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
@@ -227,7 +229,7 @@ const addInvoice = amount => {
   }
 
   let options = {
-    url: 'https://localhost:8080/v1/invoices',
+    url: `${basePort}/v1/invoices`,
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
@@ -248,7 +250,7 @@ const sendPayment = invoice => {
   }
 
   let options = {
-    url: 'https://localhost:8080/v1/channels/transactions',
+    url: `${basePort}/v1/channels/transactions`,
     // Work-around for self-signed certificates.
     rejectUnauthorized: false,
     json: true,
