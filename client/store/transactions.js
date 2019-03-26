@@ -9,7 +9,8 @@ const POST_MESSAGE = 'POST_MESSAGE'
  * INITIAL STATE
  */
 let defaultTransaction = {
-  transaction: []
+  transaction: [],
+  message: ''
 }
 /**
  * ACTION CREATORS
@@ -47,7 +48,9 @@ export const postMessageThunk = messages => {
 export default function(state = defaultTransaction, action) {
   switch (action.type) {
     case GET_TRANSACTIONS:
-      return {state, transaction: action.transaction}
+      return {...state, transaction: action.transaction}
+    case POST_MESSAGE:
+      return {...state, message: action.message}
     default:
       return state
   }

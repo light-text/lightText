@@ -4,6 +4,7 @@ import Moment from 'react-moment'
 import 'moment-timezone'
 
 const TransactionsTable = props => {
+  console.log(props)
   const receiverTransaction = props.transactions.receiverTransaction
   const senderTransaction = props.transactions.senderTransaction
   let receiverTransactionHtml = (
@@ -25,7 +26,9 @@ const TransactionsTable = props => {
       return (
         <Table.Row key={i}>
           <Table.Cell>{transaction.sender.username}</Table.Cell>
+
           <Table.Cell>{transaction.amount} satoshis</Table.Cell>
+
           <Table.Cell>
             <Moment fromNow>{transaction.createdAt}</Moment>
           </Table.Cell>
@@ -38,7 +41,9 @@ const TransactionsTable = props => {
       return (
         <Table.Row key={i}>
           <Table.Cell>{transaction.receiver.username}</Table.Cell>
+
           <Table.Cell>{transaction.amount} satoshis</Table.Cell>
+
           <Table.Cell>
             <Moment fromNow>{transaction.createdAt}</Moment>
           </Table.Cell>

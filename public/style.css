@@ -111,11 +111,11 @@ body {
 }
 
 .transactionDiv {
-  margin-top: 100px;
+  margin-top: 50px;
 }
 .col-lg-6 {
   background-color: #f3f9fb;
-  /* text-align: center; */
+  padding: 20px;
   margin-top: 30px;
   align-content: center;
 }
@@ -209,7 +209,7 @@ transaction {
 }
 
 .container-fluid transaction {
-  diplay: flex;
+  display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
@@ -342,4 +342,9 @@ form.message .ui.button {
   padding-top: 20px;
   color: #0c2550;
   font-size: 2em;
+}
+
+.chart {
+  height: 500px;
+  width: 500px;
 }
