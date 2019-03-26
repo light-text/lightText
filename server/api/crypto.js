@@ -110,11 +110,13 @@ const newAddress = async () => {
     },
     type: 'np2wkh'
   }
-  await request.get(options, function(error, response, body) {
-    console.log(body)
-    refillAddress = body.address
+  let x = new Promise((resolve, reject) => {
+    request.get(options, function(error, response, body) {
+      if (error) reject(error)
+      resolve(body.address)
+    })
   })
-  return refillAddress
+  return x
 }
 
 // balance() returns the wallet balance
@@ -265,7 +267,7 @@ const addInvoice = amount => {
 }
 
 // sendPayment() uses the invoice payment request to send a payment
-const sendPayment = invoice => {
+const sendPayment = async invoice => {
   let requestBody = {
     payment_request: invoice
   }
@@ -280,9 +282,14 @@ const sendPayment = invoice => {
     },
     form: JSON.stringify(requestBody)
   }
-  request.post(options, function(error, response, body) {
-    console.log(body)
+  let x = new Promise((resolve, reject) => {
+    request.post(options, function(error, response, body) {
+      if (error) reject(error)
+      console.log('SENDPAYMENT BODY: ', body)
+      resolve(body)
+    })
   })
+  return x
 }
 
 module.exports = {
