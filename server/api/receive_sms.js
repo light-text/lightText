@@ -37,7 +37,7 @@ const sendMessage = (phone, body) => {
       from: twilioPhone,
       to: phone
     })
-    .then(message => console.log(message.sid))
+    .then(message => console.log('TWILIO MSG ID: ', message.sid))
 }
 
 const findUserByPhone = async phone => {
@@ -127,6 +127,15 @@ const refill = async (user, amount) => {
   )
 }
 
+const subtract = async (user, amount) => {
+  let refillBalance = user.balance - amount
+
+  let refilledUser = await User.update(
+    {balance: refillBalance},
+    {where: {id: user.id}}
+  )
+}
+
 router.post('/', async (req, res, next) => {
   let body,
     action,
@@ -178,6 +187,7 @@ router.post('/', async (req, res, next) => {
     const usdRate = converterUSD.data.bpi.USD.rate_float
     const balanceBTC = balance / 100000000
     const balanceUSD = balance * usdRate / 100000000
+    let paymentHash = 'unavailable'
 
     const messages = {
       helpme: `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number or username' \n Examples:\n 'SEND 300 +11234567890' \n or 'SEND 300 Maurice'`,
@@ -196,12 +206,12 @@ router.post('/', async (req, res, next) => {
         sender.username
       }`,
       refill:
-        "We are in beta, please don't send more than $20 to the following address",
+        "Lightning Network is in beta, please don't send more than $20 to the following address:",
       negativeAmount: 'You can only send positive amounts',
       notANumber:
         'You need to enter a valid amount in order to make payments. Example SEND 300 +11234567890',
       fractionAmount: `You can't send fractional satoshis. please send a valid amount`,
-      payinvoice: `You have paid invoice: ${paymenthash}`
+      payinvoice: `You have paid invoice: ${paymentHash}`
     }
 
     if (!sender) {
@@ -210,7 +220,8 @@ router.post('/', async (req, res, next) => {
     } else {
       switch (action) {
         case 'refill':
-          let address = newAddress()
+          let address = await newAddress()
+          console.log('address from switch is: ', address)
           setTimeout(() => {
             toastMessage = address // something to check later.
             return sendMessage(senderPhone, address)
@@ -219,8 +230,8 @@ router.post('/', async (req, res, next) => {
           sendMessage(senderPhone, messages.refill)
           break
         case 'balance': {
-          // console.log('YOU ARE IN BALANCE SWITCH STATEMENT')
-          //  .then(getinfo());
+          console.log('YOU ARE IN BALANCE SWITCH STATEMENT')
+          getinfo()
           toastMessage = messages.balance
           sendMessage(senderPhone, messages.balance)
           break
@@ -228,6 +239,18 @@ router.post('/', async (req, res, next) => {
         case 'helpme':
           toastMessage = messages.helpme
           sendMessage(senderPhone, messages.helpme)
+          break
+        case 'payinvoice':
+          // check insuficient funds; check lninvoice format
+          // if both are good, return error from lightning
+          toastMessage = messages.payinvoice
+          console.log('PAY INVOICE //AMOUNT is: ', amount)
+          let payConfirmation = await sendPayment(amount)
+          await subtract(sender, payConfirmation.payment_route.total_amt)
+          // console.log('SENDER IS: ', sender, "payconfAMOUNT is: ", payConfirmation.payment_route.total_amt)
+          console.log('BALANCE BEFORE IS: ', balance)
+          paymentHash = payConfirmation.payment_preimage
+          sendMessage(senderPhone, messages.payinvoice)
           break
         case 'send':
           if (receiver === 'undefined') {
