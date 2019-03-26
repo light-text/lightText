@@ -62,7 +62,8 @@ const findUserByUsername = async userName => {
       return {
         userName: findUser.dataValues.username,
         number: findUser.dataValues.phone,
-        userId: findUser.dataValues['id']
+        userId: findUser.dataValues['id'],
+        balance: findUser.dataValues.balance
       }
     }
   } catch (error) {
@@ -97,6 +98,34 @@ const getBody = message => {
   })
 }
 
+const updatBalances = async (sender, receiver, amount) => {
+  //console.log('sender: ', sender.id, ' receiver: ', receiver)
+
+  let senderBal = sender.balance - amount
+  let receiverBal = receiver.balance + amount
+
+  //subtract from user
+  let senderUpdated = await User.update(
+    {balance: senderBal},
+    {where: {id: sender.id}}
+  )
+
+  //add to reciever
+  let receiverUpdated = User.update(
+    {balance: receiverBal},
+    {where: {id: receiver.userId}}
+  )
+}
+
+const refill = async (user, amount) => {
+  let refillBalance = user.balance + amount
+
+  let refilledUser = await User.update(
+    {balance: refillBalance},
+    {where: {id: user.id}}
+  )
+}
+
 router.post('/', async (req, res, next) => {
   let body,
     action,
@@ -109,7 +138,7 @@ router.post('/', async (req, res, next) => {
 
   if (req.body.messages) {
     messageFromWeb = await findUserByUsername(getBody(req.body.messages)[2])
-    body = getBody(req.body.messages)
+    body = getBody(req.body.messages.toLowerCase())
     action = body[0].toLowerCase()
     amount = body[1]
     if (body.length !== 1) {
@@ -118,7 +147,7 @@ router.post('/', async (req, res, next) => {
     }
     senderPhone = req.user.phone
   } else {
-    body = getBody(req.body.Body)
+    body = getBody(req.body.Body.toLowerCase())
     action = body[0].toLowerCase()
     amount = body[1]
     receiverPhone = body[2]
@@ -150,7 +179,7 @@ router.post('/', async (req, res, next) => {
     const balanceUSD = balance * usdRate / 100000000
 
     const messages = {
-      helpme: `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number' \n Example SEND 300 +11234567890`,
+      helpme: `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number or username' \n Examples:\n 'SEND 300 +11234567890' \n or 'SEND 300 Maurice'`,
       balance: `Your lightning balance is ${balance} satoshis ($${balanceUSD.toFixed(
         2
       )} USD, ${balanceBTC} BTC).`,
@@ -199,7 +228,7 @@ router.post('/', async (req, res, next) => {
           break
         case 'send':
           if (receiver === 'undefined') {
-            toastMessage = message.receiver
+            toastMessage = messages.receiver
             sendMessage(senderPhone, messages.receiver)
             break
           }
@@ -218,10 +247,12 @@ router.post('/', async (req, res, next) => {
             sendMessage(senderPhone, messages.negativeAmount)
             break
           }
-          if (n % 1 === 0) {
+          if (!(amount % 1 === 0)) {
             sendMessage(senderPhone, messages.fractionAmount)
             break
           }
+          //update the balances
+          updatBalances(sender, ourReceiver, amount)
 
           toastMessage = messages.sent
           sendMessage(senderPhone, messages.sent)

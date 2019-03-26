@@ -22,7 +22,9 @@ const sendMessage = (phone, body) => {
 
 router.post('/login', async (req, res, next) => {
   try {
-    const user = await User.findOne({where: {email: req.body.email}})
+    const user = await User.findOne({
+      where: {email: req.body.email.toLowerCase()}
+    })
     console.log(req.body.email, 'This is the email')
     if (!user) {
       console.log('No such user found:', req.body.email)
@@ -40,7 +42,15 @@ router.post('/login', async (req, res, next) => {
 
 router.post('/signup', async (req, res, next) => {
   try {
-    const user = await User.create(req.body)
+    let userInfo = {
+      username: req.body.username.toLowerCase(),
+      email: req.body.email,
+      password: req.body.password,
+      phone: req.body.phone
+    }
+
+    console.log(userInfo)
+    const user = await User.create(userInfo)
     client.validationRequests
       .create({
         friendlyName: req.body.firstName,
