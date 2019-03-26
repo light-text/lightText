@@ -15,7 +15,7 @@ class SearchBar extends React.Component {
   async componentDidMount() {
     await this.props.getAllUsers()
   }
-  handleBlur = event => {
+  handleBlur = () => {
     this.setState({
       hideResults: true
     })

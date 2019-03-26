@@ -7,6 +7,11 @@
 // // port: 127.16.19.16:8080
 // const basePort = 'https://5b8484b6.ngrok.io'
 // // const basePort = 'https://192.168.1.1:8080'
+// const request = require('request')
+
+// const basePort = 'https://localhost:8080'
+// // const basePort = 'https://192.168.1.1:8080'
+// const walletPassword = 'hello'
 
 // const macaroon = fs
 //   .readFileSync('server/api/testnet/admin.macaroon')
@@ -114,6 +119,7 @@
 //   })
 // }
 
+
 // const getinfo = () => {
 //   let options = {
 //     url: `${basePort}/v1/getinfo`,
@@ -220,6 +226,13 @@
 //   })
 // }
 
+
+
+//   request.get(options, function(error, response, body) {
+//     console.log(body)
+//     console.error(error)
+//   })
+// }
 // // openChannel() returns the wallet balance
 // const openChannel = () => {
 //   let requestBody = {
@@ -237,6 +250,7 @@
 //   }
 //   let options = {
 //     url: 'https://localhost:8001/v1/newaddress',
+//     url: 'https://localhost:8001/v1/channels',
 //     // Work-around for self-signed certificates.
 //     rejectUnauthorized: false,
 //     json: true,
@@ -254,6 +268,14 @@
 // const listChannels = () => {
 //   let options = {
 //     url: 'https://localhost:8080/v1/channels',
+//   request.post(options, function(error, response, body) {
+//     console.log(body)
+//   })
+// }
+// const getInvoice = () => {
+//   let options = {
+//     url: 'https://localhost:8080/v1/invoices/{payment_hash}',
+//     // requires payment hash in URL above
 //     // Work-around for self-signed certificates.
 //     rejectUnauthorized: false,
 //     json: true,
@@ -262,6 +284,7 @@
 //     }
 //   }
 //   request.get(options, function(error, response, body) {
+//   request.post(options, function(error, response, body) {
 //     console.log(body)
 //   })
 // }
@@ -290,6 +313,11 @@
 //     amt_paid_msat: '',
 //     state: ''
 //   }
+// const addInvoice = amount => {
+//   let requestBody = {
+//     value: amount
+//   }
+
 //   let options = {
 //     url: 'https://localhost:8080/v1/invoices',
 //     // Work-around for self-signed certificates.
@@ -319,6 +347,14 @@
 //   }
 //   let options = {
 //     url: 'https://localhost:8080/v1/invoices',
+
+// const sendPayment = invoice => {
+//   let requestBody = {
+//     payment_request: invoice
+//   }
+
+//   let options = {
+//     url: 'https://localhost:8080/v1/channels/transactions',
 //     // Work-around for self-signed certificates.
 //     rejectUnauthorized: false,
 //     json: true,
@@ -347,4 +383,8 @@
 //   addInvoice,
 //   sendPayment,
 //   lightning
+
+//   getInvoice,
+//   addInvoice,
+//   sendPayment
 // }

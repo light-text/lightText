@@ -9,6 +9,14 @@ async function seed() {
 
   const users = await Promise.all([
     User.create({
+      username: 'Milan',
+      email: 'milan@email.com',
+      phone: '+17326158815',
+      wallet: '1',
+      balance: 100000000,
+      password: '123'
+    }),
+    User.create({
       username: 'Maurice',
       email: 'mao@email.com',
       phone: '+17328595701',
