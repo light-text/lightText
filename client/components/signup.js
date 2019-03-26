@@ -68,15 +68,6 @@ const SignUp = props => {
                 type="text"
                 required
               />
-              <Form.Input
-                fluid
-                icon="bitcoin"
-                iconPosition="left"
-                placeholder="Wallet"
-                name="wallet"
-                type="password"
-                required
-              />
               <Button type="submit" color="blue" fluid size="large">
                 Sign Up
               </Button>
@@ -106,9 +97,8 @@ const mapDispatch = dispatch => {
       const email = evt.target.email.value
       const password = evt.target.password.value
       const phone = evt.target.phoneNumber.value
-      const wallet = evt.target.wallet.value
       const userName = evt.target.userName.value
-      dispatch(auth(userName, email, password, phone, wallet))
+      dispatch(auth(userName, email, password, phone))
     }
   }
 }
