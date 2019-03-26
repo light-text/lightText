@@ -21,10 +21,9 @@ export default function HomePage() {
             <h2 id="lightning">Lightning Wallets ⚡ </h2>
             <h4>with zero configuration</h4>
             <span className="text">
-              Unfairly cheap and fast transactions. Bluewallet was the first
-              wallet to bring zero configuration, ready to use, user friendly
-              Lightning Network Wallets for iOS and Android. Read more about our
-              open source.
+              Unfairly cheap and fast transactions. LightText brings zero
+              configuration, ready to use, user friendly Lightning Network
+              Wallets for iOS and Android. Read more about our open source.
             </span>
           </div>
         </div>
