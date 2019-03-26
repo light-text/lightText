@@ -15,8 +15,7 @@ export default function HomePage() {
             <span className="text">
               With LightText you can send Bitcoins by SMS. You have to register
               with us and send money to someone registered. You don't need
-              Internet, just a phone number. It is easy, if you can text, you
-              can crypto !
+              Internet, just a phone number.
             </span>
             <h2 id="lightning">Lightning Wallets ⚡ </h2>
             <h4>with zero configuration</h4>
@@ -53,12 +52,27 @@ export default function HomePage() {
         </div>
         <div />
       </div>
+      <div className="centralDiv">
+        <div className="signUp">
+          <Signup />
+        </div>
+        <div className="cryptoEasy">
+          <span id="text">It is easy if you can text, you can crypto !</span>
+        </div>
+      </div>
       <div className="bottomDiv">
         <div className="bitcoinHome">
           <BitcoinInfo />
         </div>
-        <div className="signUp">
-          <Signup />
+      </div>
+      <div className="lastDiv">
+        <div>
+          <iframe
+            frameBorder="0"
+            scrolling="no"
+            src="https://interactive-bitcoin-price-chart-yenswahhtb.now.sh/"
+            style={{width: '100%', height: '550px', overflow: 'hidden'}}
+          />
         </div>
       </div>
       <div>

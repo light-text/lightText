@@ -46,7 +46,9 @@ export default class BitcoinInfo extends React.Component {
       <div>
         <h1 id="btcInfo">Bitcoins Information</h1>
         <p id="update">Last Update : {this.state.date}</p>
-        <p id="today">Today's rate : 1 Bitcoin = {this.state.rate} USD</p>
+        <p id="today">
+          Today's rate : 1 Bitcoin = {Number(this.state.rate).toFixed(2)} USD
+        </p>
         <p id="convert">Convert your bitcoins to dollars : </p>
         <p />
         <div className="ui input focus">
@@ -59,7 +61,7 @@ export default class BitcoinInfo extends React.Component {
             onChange={this.onChange}
           />
         </div>
-        <p className="result"> = {result} USD</p>
+        <p className="result"> = {Number(result).toFixed(2)} USD</p>
       </div>
     )
   }

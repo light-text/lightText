@@ -65,12 +65,13 @@ body {
 }
 
 .bottomDiv {
-  display: flex;
+  /* display: flex;
   justify-content: space-between;
   /* flex-direction: column; */
-  margin-top: 40px;
+  /* margin-top: 40px;
   margin-left: 90px;
-  margin-right: 30px;
+  margin-right: 30px; */
+  text-align: center;
 }
 
 .instructions {
@@ -93,12 +94,14 @@ body {
   margin-left: 40px;
 }
 .bitcoinHome {
-  width: 50%;
+  /* width: 50%; */
+  margin-top: 90px;
+  align-items: center;
 }
 .signUp {
   width: 50%;
-  margin-left: 50px;
-  margin-top: 60px;
+  /* margin-left: 50px; */
+  margin-top: 30px;
 }
 .iphoneHome {
   margin-top: 50px;
@@ -347,4 +350,34 @@ form.message .ui.button {
 .chart {
   height: 500px;
   width: 500px;
+}
+
+.lastDiv {
+  margin-top: 30px;
+}
+
+#text {
+  font-size: 2.5em;
+  color: #0c2550;
+  font-style: italic;
+  font-weight: bold;
+}
+.cryptoEasy {
+  margin-right: 150px;
+  align-items: center;
+  text-align: center;
+  margin-top: 130px;
+  width: 20%;
+}
+.centralDiv {
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 50px;
+  background: #f5f5f5;
+  color: #ccc;
 }

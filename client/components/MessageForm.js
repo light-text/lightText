@@ -59,7 +59,7 @@ class MessageForm extends React.Component {
               }, 1100)
             }
           >
-            Sent
+            Send
           </Button>
         </form>
       </div>

@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link} from 'react-router-dom'
 
 export default function FAQs() {
   return (
@@ -49,13 +50,11 @@ export default function FAQs() {
         </span>
       </div>
       <div>
-        <h2 className="question">
-          How do I get send Bitcoin cash with LightText ?
-        </h2>
+        <h2 className="question">How do I send Bitcoin with LightText ?</h2>
         <span className="description">
-          You can send Bitcoin cash by texting 'SEND' + the amount tou want to
-          send + the username or number of the person you want to end to. For
-          more information go back to the Home page.
+          You can send Bitcoin by texting 'SEND' + the amount you want to send +
+          the username or number of the person you want to end to. For more
+          information go back to the <Link to="/">Home page.</Link>
         </span>
       </div>
     </div>

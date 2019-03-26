@@ -17,11 +17,15 @@ class userHome extends React.Component {
 
           <div
             className="col-lg-6 col-m-4"
-            style={{backgroundColor: '#e7eaf6'}}
+            style={{
+              backgroundColor: '#e7eaf6',
+              borderRadius: '10px'
+            }}
           >
             <div className="myform">
-              <SearchBar />
+              <h1 id="title">Send a text</h1>
               <MessageForm />
+              <SearchBar />
             </div>
           </div>
         </div>

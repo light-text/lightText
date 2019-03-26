@@ -29,7 +29,6 @@ class SearchBar extends React.Component {
   render() {
     return (
       <div>
-        <h1 id="title">Find a title</h1>
         <p id="findUsername">
           You are looking for a user and you do not remember his username ? Find
           it here !
