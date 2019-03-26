@@ -9,6 +9,7 @@ const client = require('twilio')(
 )
 const {User} = require('../db/models')
 const {
+  checkRefill,
   genSeed,
   initWallet,
   unlockwallet,
@@ -170,7 +171,8 @@ router.post('/', async (req, res, next) => {
       negativeAmount: 'You can only send positive amounts',
       notANumber:
         'You need to enter a valid amount in order to make payments. Example SEND 300 +11234567890',
-      fractionAmount: `You can't send fractional satoshis. please send a valid amount`
+      fractionAmount: `You can't send fractional satoshis. please send a valid amount`,
+      payinvoice: `You have paid invoice: ${paymenthash}`
     }
 
     if (!sender) {
@@ -179,9 +181,10 @@ router.post('/', async (req, res, next) => {
     } else {
       switch (action) {
         case 'refill':
+          let address = newAddress()
           setTimeout(() => {
-            toastMessage = '46283hkehwejriy5i234982' // something to check later.
-            return sendMessage(senderPhone, '46283hkehwejriy5i234982')
+            toastMessage = address // something to check later.
+            return sendMessage(senderPhone, address)
           }, 400)
           toastMessage = messages.refill
           sendMessage(senderPhone, messages.refill)
@@ -224,6 +227,7 @@ router.post('/', async (req, res, next) => {
           }
 
           toastMessage = messages.sent
+          // CRYPTO.sendPayment(invoice) .then(sendMessage()) - need to update the message object to reflect an invoice number
           sendMessage(senderPhone, messages.sent)
 
           sendMessage(ourReceiver.number || receiverPhone, messages.received)
@@ -233,6 +237,7 @@ router.post('/', async (req, res, next) => {
             senderId: sender['id']
           })
           break
+        // NEED a new case payinvoice that checks the same parameters as SEND except calls the sendPayment() function and returns the paymenthash for confirmation
         default:
           sendMessage(senderPhone, messages.helpme)
       }

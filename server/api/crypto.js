@@ -2,12 +2,29 @@
 
 var fs = require('fs')
 const request = require('request')
+const axios = require('axios')
 
 const basePort = 'https://127.0.0.1:8081'
 // const basePort = 'https://192.168.1.1:8080'
 const walletPassword = 'hello'
 
 const macaroon = fs.readFileSync('server/api/admin.macaroon').toString('hex')
+
+const checkRefill = async address => {
+  try {
+    const {data} = await axios.get(
+      `https://api.blockcypher.com/v1/btc/main/addrs/${address}/balance`
+    )
+    const refillData = {
+      address: address,
+      received: data.total_received,
+      confirmations: data.n_tx
+    }
+    return refillData
+  } catch (err) {
+    throw new Error(err)
+  }
+}
 
 const genSeed = () => {
   let options = {
@@ -81,7 +98,8 @@ const getinfo = () => {
 }
 
 // newAddress() returns the a new Bitcoin address for refills
-const newAddress = () => {
+const newAddress = async () => {
+  let refillAddress = ''
   let options = {
     url: `${basePort}/v1/newaddress`,
     // Work-around for self-signed certificates.
@@ -89,11 +107,14 @@ const newAddress = () => {
     json: true,
     headers: {
       'Grpc-Metadata-macaroon': macaroon
-    }
+    },
+    type: 'np2wkh'
   }
-  request.get(options, function(error, response, body) {
+  await request.get(options, function(error, response, body) {
     console.log(body)
+    refillAddress = body.address
   })
+  return refillAddress
 }
 
 // balance() returns the wallet balance
@@ -265,6 +286,7 @@ const sendPayment = invoice => {
 }
 
 module.exports = {
+  checkRefill,
   genSeed,
   initWallet,
   unlockwallet,
