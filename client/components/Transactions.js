@@ -1,7 +1,8 @@
 import React from 'react'
-import {Table} from 'semantic-ui-react'
+import {Table, Button} from 'semantic-ui-react'
 import Moment from 'react-moment'
 import 'moment-timezone'
+import {Link} from 'react-router-dom'
 
 const TransactionsTable = props => {
   console.log(props)
@@ -54,7 +55,16 @@ const TransactionsTable = props => {
   return (
     <div className="transactionDiv">
       <h1 id="transactionTable">Your transactions</h1>
-
+      <Button
+        type="submit"
+        className="ui button"
+        style={{fontSize: '1.2em', marginLeft: '900px'}}
+      >
+        <Link to="/myTransactions">
+          See more transactions
+          {/* <i className="right arrow icon" /> */}
+        </Link>
+      </Button>
       <div className="container-fluid transaction">
         <div className="row">
           <div id="receivedTable" className="col-lg-6 col-m-4 transactions">

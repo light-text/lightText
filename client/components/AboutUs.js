@@ -12,7 +12,7 @@ export default function AboutUs() {
             </div>
             <div className="presentation">
               <span>Taulant Vokshi</span>
-              <p>Kossovo</p>
+              <p>United States</p>
               <div className="github">
                 <img src="/images/download.png" />
                 <a href="https://github.com/Taulantvokshi">@Taulantvokshi</a>
@@ -85,7 +85,7 @@ export default function AboutUs() {
         </div>
         <div />
         <div className="fullstack">
-          <span>All student at Fullstack Academy of Code in New York</span>
+          <span>Created at Fullstack Academy of Code in New York</span>
         </div>
       </div>
     </div>
