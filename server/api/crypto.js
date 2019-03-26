@@ -1,390 +1,282 @@
-// /* eslint-disable handle-callback-err */
-// var fs = require('fs')
-// var grpc = require('grpc')
-// process.env.GRPC_SSL_CIPHER_SUITES = 'HIGH+ECDSA'
-// const lnService = require('ln-service')
+/* eslint-disable handle-callback-err */
 
-// // port: 127.16.19.16:8080
-// const basePort = 'https://5b8484b6.ngrok.io'
-// // const basePort = 'https://192.168.1.1:8080'
-// const request = require('request')
+var fs = require('fs')
+const request = require('request')
 
-// const basePort = 'https://localhost:8080'
-// // const basePort = 'https://192.168.1.1:8080'
-// const walletPassword = 'hello'
+const basePort = 'https://127.0.0.1:8081'
+// const basePort = 'https://192.168.1.1:8080'
+const walletPassword = 'hello'
 
-// const macaroon = fs
-//   .readFileSync('server/api/testnet/admin.macaroon')
-//   .toString('hex')
-// let metadata = new grpc.Metadata()
-// metadata.add('macaroon', macaroon)
-// let macaroonCreds = grpc.credentials.createFromMetadataGenerator(
-//   (_args, callback) => {
-//     callback(null, metadata)
-//   }
-// )
+const macaroon = fs.readFileSync('server/api/admin.macaroon').toString('hex')
 
-// const lndCert = fs.readFileSync(
-//   '/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/tls (5).cert'
-// )
-// const lndKey = fs.readFileSync(
-//   '/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/tls (1).key'
-// )
-// let sslCreds = grpc.credentials.createSsl(lndCert)
-// let credentials = grpc.credentials.combineChannelCredentials(
-//   sslCreds,
-//   macaroonCreds
-// )
+const genSeed = () => {
+  let options = {
+    url: 'https://127.16.19.16:8080/v1/genseed',
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true
+  }
 
-// /*
-// const base64Cert = require('/home/milanpatel/Documents/Capstone/li ghtText/server/api/testnet/base64tls.cert');
-// const base64Macaroon = require('/home/milanpatel/Documents/Capstone/lightText/server/api/testnet/base64Admin.macaroon');
+  return request.get(options, function(error, response, body) {
+    console.log(body)
+    console.error(error)
+  })
+}
 
-// const lnd = lnService.lightningDaemon({
-//   cert: base64Cert,
-//   macaroon: base64Macaroon,
-//   socket: `${basePort}`,
-// });
+const initWallet = async password => {
+  const seed = await genSeed()
+  let requestBody = {
+    wallet_password: password,
+    cipher_seed_mnemonic: seed
+  }
 
-// lnService.getWalletInfo({lnd}, (error, result) => {
-//   console.log(result);
-// });
-// */
+  let options = {
+    url: 'https://127.16.19.16:8080/v1/initwallet',
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    form: JSON.stringify(requestBody)
+  }
 
-// const lnrpcDescriptor = grpc.load('server/api/rpc.proto')
-// const lnrpc = lnrpcDescriptor.lnrpc
+  request.get(options, function(error, response, body) {
+    console.log(body)
+    console.error(error)
+  })
+}
 
-// const request = require('request')
+const unlockwallet = (password, cb) => {
+  let requestBody = {
+    wallet_password: Buffer.from(password).toString('base64')
+  }
+  let options = {
+    url: `${basePort}/v1/unlockwallet`,
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    form: JSON.stringify(requestBody)
+  }
+  request.post(options, function(error, response, body) {
+    console.log(body)
+    setTimeout(() => {
+      cb()
+    }, 3000)
+  })
+}
 
-// const lightning = new lnrpc.Lightning(`${basePort}`, credentials)
+const getinfo = () => {
+  let options = {
+    url: `${basePort}/v1/getinfo`,
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    }
+  }
 
-// /*
-// lightning.getinfo(request, function(err, response) {
-//   console.log(response);
-// })
-// */
-// // wallet_password: 'fullstackacademy'
+  request.get(options, function(error, response, body) {
+    console.log(body)
+    console.error(error)
+  })
+}
 
-// const genSeed = () => {
-//   let options = {
-//     url: 'https://127.16.19.16:8080/v1/genseed',
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true
-//   }
+// newAddress() returns the a new Bitcoin address for refills
+const newAddress = () => {
+  let options = {
+    url: `${basePort}/v1/newaddress`,
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    }
+  }
+  request.get(options, function(error, response, body) {
+    console.log(body)
+  })
+}
 
-//   return request.get(options, function(error, response, body) {
-//     console.log(body)
-//     console.error(error)
-//   })
-// }
+// balance() returns the wallet balance
+const balance = () => {
+  let options = {
+    url: `${basePort}/v1/balance/blockchain`,
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    }
+  }
+  request.get(options, function(error, response, body) {
+    console.log(body)
+  })
+}
 
-// const initWallet = async password => {
-//   const seed = await genSeed()
-//   let requestBody = {
-//     wallet_password: password,
-//     cipher_seed_mnemonic: seed
-//   }
+// getPeers() lists all currently active peers
+const getPeers = () => {
+  let options = {
+    url: `${basePort}/v1/peers`,
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    }
+  }
+  request.get(options, function(error, response, body) {
+    console.log(body)
+  })
+}
 
-//   let options = {
-//     url: 'https://127.16.19.16:8080/v1/initwallet',
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true,
-//     form: JSON.stringify(requestBody)
-//   }
+/*
+CONNECT NEEDS EDITING TO URL PATH
 
-//   request.get(options, function(error, response, body) {
-//     console.log(body)
-//     console.error(error)
-//   })
-// }
+*/
+// connect() establishes a connection to remote peers
+const connect = addr => {
+  let requestBody = {
+    addr: addr,
+    perm: true
+  }
+  let options = {
+    url: `${basePort}/v1/newaddress`,
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    },
+    form: JSON.stringify(requestBody)
+  }
+  request.post(options, function(error, response, body) {
+    console.log(body)
+  })
+}
 
-// const unlockwallet = (password, cb) => {
-//   let requestBody = {
-//     wallet_password: Buffer.from(password).toString('base64')
-//   }
-//   let options = {
-//     url: `${basePort}/v1/unlockwallet`,
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true,
-//     form: JSON.stringify(requestBody)
-//   }
-//   request.post(options, function(error, response, body) {
-//     console.log(body)
-//     setTimeout(() => {
-//       cb()
-//     }, 3000)
-//   })
-// }
+// disconnect() destorys a connection to a specified remote peer
+const disconnect = addr => {
+  let options = {
+    url: `${basePort}/v1/peers/${addr}`,
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    }
+  }
+  request.delete(options, function(error, response, body) {
+    console.log(body)
+  })
+}
 
+// listChannels() returns currently open channels with the node
+const listChannels = () => {
+  let options = {
+    url: `${basePort}/v1/channels`,
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    }
+  }
+  request.get(options, function(error, response, body) {
+    console.log(body)
+  })
+}
 
-// const getinfo = () => {
-//   let options = {
-//     url: `${basePort}/v1/getinfo`,
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true,
-//     headers: {
-//       'Grpc-Metadata-macaroon': macaroon
-//     }
-//   }
-//   lightning.getInfo({}, function(err, response) {
-//     console.log('GetInfo:', response)
-//     console.error(err)
-//   })
+// openChannel() opens a channel with the specified node
+const openChannel = (addr, amount) => {
+  let requestBody = {
+    node_pubkey: addr,
+    local_funding_amount: amount
+  }
+  let options = {
+    url: `${basePort}/v1/channels`,
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    },
+    form: JSON.stringify(requestBody)
+  }
+  request.post(options, function(error, response, body) {
+    console.log(body)
+  })
+}
 
-//   /* lightning.getinfo()
-//   get(options, function(error, response, body) {
-//     console.log(body)
-//     console.error(error)
-//   }) */
-// }
+// getInvoice() returns an invoice based on a payment hash - payRequest must be exactly 32 bytes
+const getInvoice = payRequest => {
+  let options = {
+    url: `${basePort}/v1/invoices/${payRequest}`,
+    // requires payment hash in URL above
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    }
+  }
+  request.post(options, function(error, response, body) {
+    console.log(body)
+  })
+}
 
-// const newAddress = () => {
-//   let options = {
-//     url: 'https://127.16.19.16:8080/v1/newaddress',
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true,
-//     headers: {
-//       'Grpc-Metadata-macaroon': macaroon
-//     }
-//   }
-//   request.get(options, function(error, response, body) {
-//     console.log(body)
-//   })
-// }
+const addInvoice = amount => {
+  let requestBody = {
+    value: amount
+  }
 
-// // balance() returns the wallet balance
-// const balance = () => {
-//   let options = {
-//     url: 'https://localhost:8080/v1/balance/blockchain',
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true,
-//     headers: {
-//       'Grpc-Metadata-macaroon': macaroon
-//     }
-//   }
-//   request.get(options, function(error, response, body) {
-//     console.log(body)
-//   })
-// }
+  let options = {
+    url: `${basePort}/v1/invoices`,
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    },
+    form: JSON.stringify(requestBody)
+  }
+  request.post(options, function(error, response, body) {
+    console.log(body)
+  })
+}
 
-// // getPeers() lists all currently active peers
-// const getPeers = () => {
-//   let options = {
-//     url: 'https://localhost:8080/v1/peers',
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true,
-//     headers: {
-//       'Grpc-Metadata-macaroon': macaroon
-//     }
-//   }
-//   request.get(options, function(error, response, body) {
-//     console.log(body)
-//   })
-// }
+// sendPayment() uses the invoice payment request to send a payment
+const sendPayment = invoice => {
+  let requestBody = {
+    payment_request: invoice
+  }
 
-// // connect() establishes a connection to remote peers
-// const connect = () => {
-//   let requestBody = {
-//     addr: '',
-//     perm: true
-//   }
-//   let options = {
-//     url: 'https://localhost:8001/v1/newaddress',
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true,
-//     headers: {
-//       'Grpc-Metadata-macaroon': macaroon
-//     },
-//     form: JSON.stringify(requestBody)
-//   }
-//   request.post(options, function(error, response, body) {
-//     console.log(body)
-//   })
-// }
+  let options = {
+    url: `${basePort}/v1/channels/transactions`,
+    // Work-around for self-signed certificates.
+    rejectUnauthorized: false,
+    json: true,
+    headers: {
+      'Grpc-Metadata-macaroon': macaroon
+    },
+    form: JSON.stringify(requestBody)
+  }
+  request.post(options, function(error, response, body) {
+    console.log(body)
+  })
+}
 
-// // disconnect() destorys a connection to a specified remote peer
-// const disconnect = () => {
-//   let options = {
-//     url: 'https://localhost:8080/v1/peers/{pub_key}',
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true,
-//     headers: {
-//       'Grpc-Metadata-macaroon': macaroon
-//     }
-//   }
-//   request.delete(options, function(error, response, body) {
-//     console.log(body)
-//   })
-// }
-
-
-
-//   request.get(options, function(error, response, body) {
-//     console.log(body)
-//     console.error(error)
-//   })
-// }
-// // openChannel() returns the wallet balance
-// const openChannel = () => {
-//   let requestBody = {
-//     node_pubkey: 1,
-//     node_pubkey_string: '',
-//     local_funding_amount: '',
-//     push_sat: '',
-//     target_conf: '',
-//     sat_per_byte: '',
-//     private: false,
-//     min_htlc_msat: '',
-//     remote_csv_delay: '',
-//     min_confs: 1,
-//     spend_unconfirmed: false
-//   }
-//   let options = {
-//     url: 'https://localhost:8001/v1/newaddress',
-//     url: 'https://localhost:8001/v1/channels',
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true,
-//     headers: {
-//       'Grpc-Metadata-macaroon': macaroon
-//     },
-//     form: JSON.stringify(requestBody)
-//   }
-//   request.get(options, function(error, response, body) {
-//     console.log(body)
-//   })
-// }
-
-// // listChannels() returns currently open channels with the node
-// const listChannels = () => {
-//   let options = {
-//     url: 'https://localhost:8080/v1/channels',
-//   request.post(options, function(error, response, body) {
-//     console.log(body)
-//   })
-// }
-// const getInvoice = () => {
-//   let options = {
-//     url: 'https://localhost:8080/v1/invoices/{payment_hash}',
-//     // requires payment hash in URL above
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true,
-//     headers: {
-//       'Grpc-Metadata-macaroon': macaroon
-//     }
-//   }
-//   request.get(options, function(error, response, body) {
-//   request.post(options, function(error, response, body) {
-//     console.log(body)
-//   })
-// }
-
-// const addInvoice = () => {
-//   let requestBody = {
-//     memo: '',
-//     receipt: 1,
-//     r_preimage: 1,
-//     r_hash: 1,
-//     value: '',
-//     settled: false,
-//     creation_date: '',
-//     settle_date: '',
-//     payment_request: '',
-//     description_hash: '',
-//     expiry: '',
-//     fallback_addr: '',
-//     cltv_expiry: '',
-//     route_hints: [],
-//     private: false,
-//     add_index: '',
-//     settle_index: '',
-//     amt_paid: '',
-//     amt_paid_sat: '',
-//     amt_paid_msat: '',
-//     state: ''
-//   }
-// const addInvoice = amount => {
-//   let requestBody = {
-//     value: amount
-//   }
-
-//   let options = {
-//     url: 'https://localhost:8080/v1/invoices',
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true,
-//     headers: {
-//       'Grpc-Metadata-macaroon': macaroon
-//     },
-//     form: JSON.stringify(requestBody)
-//   }
-//   request.post(options, function(error, response, body) {
-//     console.log(body)
-//   })
-// }
-
-// const sendPayment = () => {
-//   let requestBody = {
-//     dest: 1,
-//     dest_string: '',
-//     amt: '',
-//     payment_hash: 1,
-//     payment_hash_string: '',
-//     payment_request: '',
-//     final_cltv_delta: 1,
-//     fee_limit: '',
-//     outgoing_chan_id: ''
-//   }
-//   let options = {
-//     url: 'https://localhost:8080/v1/invoices',
-
-// const sendPayment = invoice => {
-//   let requestBody = {
-//     payment_request: invoice
-//   }
-
-//   let options = {
-//     url: 'https://localhost:8080/v1/channels/transactions',
-//     // Work-around for self-signed certificates.
-//     rejectUnauthorized: false,
-//     json: true,
-//     headers: {
-//       'Grpc-Metadata-macaroon': macaroon
-//     },
-//     form: JSON.stringify(requestBody)
-//   }
-//   request.post(options, function(error, response, body) {
-//     console.log(body)
-//   })
-// }
-
-// module.exports = {
-//   genSeed,
-//   initWallet,
-//   unlockwallet,
-//   getinfo,
-//   newAddress,
-//   balance,
-//   getPeers,
-//   connect,
-//   disconnect,
-//   openChannel,
-//   listChannels,
-//   addInvoice,
-//   sendPayment,
-//   lightning
-
-//   getInvoice,
-//   addInvoice,
-//   sendPayment
-// }
+module.exports = {
+  genSeed,
+  initWallet,
+  unlockwallet,
+  getinfo,
+  newAddress,
+  balance,
+  getPeers,
+  connect,
+  disconnect,
+  openChannel,
+  listChannels,
+  getInvoice,
+  addInvoice,
+  sendPayment
+}
