@@ -3,11 +3,13 @@
 var fs = require('fs')
 const request = require('request')
 const axios = require('axios')
+const {User} = require('../db/models')
 
 const basePort = 'https://127.0.0.1:8081'
 // const basePort = 'https://192.168.1.1:8080'
 const walletPassword = 'hello'
 
+const CronJob = require('cron').CronJob
 const macaroon = fs.readFileSync('server/api/admin.macaroon').toString('hex')
 
 const checkRefill = async address => {
@@ -15,15 +17,39 @@ const checkRefill = async address => {
     const {data} = await axios.get(
       `https://api.blockcypher.com/v1/btc/main/addrs/${address}/balance`
     )
-    const refillData = {
-      address: address,
-      received: data.total_received,
-      confirmations: data.n_tx
-    }
-    return refillData
+    return data
   } catch (err) {
-    throw new Error(err)
+    console.log(
+      'The address provided is not yet recognized by BlockCypher. We will try again in 10 minutes.'
+    )
   }
+}
+
+const refill = async (user, amount) => {
+  let refillBalance = user.balance + amount
+
+  let refilledUser = await User.update(
+    {balance: refillBalance},
+    {where: {id: user.id}}
+  )
+  console.log('REFILLED USER: ', refilledUser)
+}
+
+const startCron = (address, sender) => {
+  console.log('Before job instantiation')
+  const job = new CronJob('0 */10 * * * *', async function() {
+    const d = new Date()
+    console.log('Every Ten Minute:', d)
+    let refillData = await checkRefill(address)
+    console.log('REFILL DATA FROM BLOCKCYPHER: ', refillData.balance)
+    console.log('ADDRESS INFORMATION IS: ', refillData)
+    if (refillData.balance > 0) {
+      refill(sender, refillData.balance)
+      job.stop()
+    }
+  })
+  console.log('After job instantiation')
+  job.start()
 }
 
 const genSeed = () => {
@@ -307,5 +333,6 @@ module.exports = {
   listChannels,
   getInvoice,
   addInvoice,
-  sendPayment
+  sendPayment,
+  startCron
 }

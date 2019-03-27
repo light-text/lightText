@@ -37,10 +37,11 @@ export default function HomePage() {
           <img
             src="/images/lightText.gif"
             style={{
-              width: 227,
+              width: 225,
               height: 490,
               position: 'absolute',
-              left: '4%',
+              top: '1%',
+              left: '3%',
               zIndex: '-1'
             }}
           />
