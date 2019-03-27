@@ -19,7 +19,8 @@ class userHome extends React.Component {
             className="col-lg-6 col-m-4"
             style={{
               backgroundColor: '#e7eaf6',
-              borderRadius: '10px'
+              borderRadius: '10px',
+              marginLeft: '-20px'
             }}
           >
             <div className="myform">
@@ -29,7 +30,9 @@ class userHome extends React.Component {
             </div>
           </div>
         </div>
+
         <UserInfo />
+
         <Chart />
       </div>
     )
