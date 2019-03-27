@@ -10,8 +10,10 @@ class MessageForm extends React.Component {
     this.getMessageStatus = this.getMessageStatus.bind(this)
   }
 
+
   componentDidMount() {
     this.props.transaction()
+
   }
 
   getMessageStatus(message) {
@@ -74,7 +76,6 @@ const mapProps = state => {
 
 const mapDispatch = dispatch => {
   return {
-    transaction: () => getTransactionThunk(),
 
     handleSubmit(evt) {
       evt.preventDefault()
