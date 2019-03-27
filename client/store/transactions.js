@@ -39,6 +39,7 @@ export const postMessageThunk = messages => {
         messages
       })
       dispatch(postMessage(results.data))
+      dispatch(getTransactionThunk())
     } catch (error) {
       throw new Error('An error has occur: err')
     }

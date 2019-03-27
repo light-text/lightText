@@ -351,6 +351,7 @@ form.message .ui.button {
 .chart {
   height: 500px;
   width: 500px;
+  background-color: #e9e4e6;
 }
 
 .lastDiv {
