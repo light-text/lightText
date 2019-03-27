@@ -94,10 +94,11 @@ const mapDispatch = dispatch => {
   return {
     handleSubmit(evt) {
       evt.preventDefault()
+      const newValue = evt.target.userName.value
       const email = evt.target.email.value
       const password = evt.target.password.value
       const phone = evt.target.phoneNumber.value
-      const userName = evt.target.userName.value
+      const userName = '+1' + newValue
       dispatch(auth(userName, email, password, phone))
     }
   }

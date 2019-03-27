@@ -148,14 +148,17 @@ router.post('/', async (req, res, next) => {
 
   senderPhone = req.user.phone
   if (req.body.messages) {
-    messageFromWeb = await findUserByUsername(getBody(req.body.messages)[2])
+    messageFromWeb = await findUserByUsername(
+      getBody(req.body.messages.toLowerCase())[2]
+    )
     body = getBody(req.body.messages.toLowerCase())
     action = body[0].toLowerCase()
     amount = body[1]
     if (body.length !== 1) {
-      if (!receiverPhone) {
+      if (!messageFromWeb) {
         toastMessage =
           'The user you are trying to pay is not registered with us. Please try another user.'
+        res.send(toastMessage)
       } else {
         receiverPhone = messageFromWeb.number
         webUserName = messageFromWeb.userName

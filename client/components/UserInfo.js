@@ -16,11 +16,40 @@ export class UserInfo extends React.Component {
       senderTransaction: []
     }
   }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.history.transaction.sender) {
+      if (
+        prevProps.history.transaction.sender.length !==
+        this.props.history.transaction.sender.length
+      ) {
+        this.setState({
+          receiverTransaction: this.props.history.transaction.receiver.slice(
+            -6
+          ),
+          senderTransaction: this.props.history.transaction.sender.slice(-6)
+        })
+      }
+    }
+    // if (prevProps.history.transaction.receiver.length) {
+    //   if (
+    //     prewProps.history.transaction.receiver.length !==
+    //     this.props.history.transaction.receiver.length
+    //   ) {
+    //     this.setState({
+    //       receiverTransaction: this.props.history.transaction.receiver.slice(
+    //         -6
+    //       ),
+    //       senderTransaction: this.props.history.transaction.sender.slice(-6)
+    //     })
+    //   }
+    // }
+  }
   async componentDidMount() {
     await this.props.getTransaction()
     this.setState({
-      receiverTransaction: this.props.history.transaction.receiver,
-      senderTransaction: this.props.history.transaction.sender
+      receiverTransaction: this.props.history.transaction.receiver.slice(-6),
+      senderTransaction: this.props.history.transaction.sender.slice(-6)
     })
   }
   render() {
