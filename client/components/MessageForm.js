@@ -1,7 +1,7 @@
 import React from 'react'
 import {Button, Form} from 'semantic-ui-react'
 import {connect} from 'react-redux'
-import {postMessageThunk, getTransactionsThunk} from '../store/transactions'
+import {postMessageThunk, getTransactionThunk} from '../store/transactions'
 import {withToastManager} from 'react-toast-notifications'
 
 class MessageForm extends React.Component {
@@ -10,8 +10,8 @@ class MessageForm extends React.Component {
     this.getMessageStatus = this.getMessageStatus.bind(this)
   }
 
-  componentDidUpdate() {
-    this.props.transactions()
+  componentDidMount() {
+    this.props.transaction()
   }
 
   getMessageStatus(message) {
@@ -36,7 +36,7 @@ class MessageForm extends React.Component {
       <div className="message-form">
         <p id="beforeBox">
           You prefere to send a message from your account instead of a SMS ? It
-          is possible , use the box here !{' '}
+          is possible , use the box here !
         </p>
         <form onSubmit={handleSubmit} className="message">
           <div className="ui input focus">
@@ -74,11 +74,13 @@ const mapProps = state => {
 
 const mapDispatch = dispatch => {
   return {
-    transactions: () => dispatch(getTransactionsThunk()),
+    transaction: () => getTransactionThunk(),
+
     handleSubmit(evt) {
       evt.preventDefault()
       const messages = evt.target.messages.value
       dispatch(postMessageThunk(messages))
+
       evt.target.messages.value = ''
     }
   }

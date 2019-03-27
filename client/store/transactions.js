@@ -38,7 +38,9 @@ export const postMessageThunk = messages => {
       const results = await axios.post('/api/sms', {
         messages
       })
+
       dispatch(postMessage(results.data))
+      //dispatch(getTransactionThunk())
     } catch (error) {
       throw new Error('An error has occur: err')
     }

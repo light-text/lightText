@@ -146,16 +146,21 @@ router.post('/', async (req, res, next) => {
     messageFromWeb,
     toastMessage
 
+  senderPhone = req.user.phone
   if (req.body.messages) {
     messageFromWeb = await findUserByUsername(getBody(req.body.messages)[2])
     body = getBody(req.body.messages.toLowerCase())
     action = body[0].toLowerCase()
     amount = body[1]
     if (body.length !== 1) {
-      receiverPhone = messageFromWeb.number
-      webUserName = messageFromWeb.userName
+      if (!receiverPhone) {
+        toastMessage =
+          'The user you are trying to pay is not registered with us. Please try another user.'
+      } else {
+        receiverPhone = messageFromWeb.number
+        webUserName = messageFromWeb.userName
+      }
     }
-    senderPhone = req.user.phone
   } else {
     body = getBody(req.body.Body.toLowerCase())
     action = body[0].toLowerCase()
@@ -254,6 +259,7 @@ router.post('/', async (req, res, next) => {
           break
         case 'send':
           if (receiver === 'undefined') {
+            console.log(receiver, 'this is')
             toastMessage = messages.receiver
             sendMessage(senderPhone, messages.receiver)
             break

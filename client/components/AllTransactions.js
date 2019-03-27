@@ -1,31 +1,38 @@
 import React from 'react'
+import {connect} from 'react-redux'
+import {getTransactionThunk} from '../store/transactions'
 import {Table} from 'semantic-ui-react'
 import Moment from 'react-moment'
 import 'moment-timezone'
-import {connect} from 'react-redux'
-import {getTransactionThunk} from '../store/transactions'
-
-class AllTransactions extends React.Component {
+/**
+ * COMPONENT
+ */
+export class UserInfo extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      receiverTransaction: [],
+      senderTransaction: []
+    }
   }
   async componentDidMount() {
-    await this.props.getTransactions()
+    await this.props.getTransaction()
+    this.setState({
+      receiverTransaction: this.props.history.transaction.receiver,
+      senderTransaction: this.props.history.transaction.sender
+    })
   }
-
   render() {
-    console.log(this.props.history)
-    const receiverTransaction = this.props.history.transaction.receiver
-    const senderTransaction = this.props.history.transaction.sender
-
-    var receiverTransactionHtml = (
+    const receiverTransaction = this.state.receiverTransaction
+    const senderTransaction = this.state.senderTransaction
+    let receiverTransactionHtml = (
       <tr>
         <td colSpan="3" className="empty">
           No transaction recorded
         </td>
       </tr>
     )
-    var senderTransactionHtml = (
+    let senderTransactionHtml = (
       <tr>
         <td colSpan="3" className="empty">
           No transaction recorded
@@ -37,7 +44,9 @@ class AllTransactions extends React.Component {
         return (
           <Table.Row key={i}>
             <Table.Cell>{transaction.sender.username}</Table.Cell>
+
             <Table.Cell>{transaction.amount} satoshis</Table.Cell>
+
             <Table.Cell>
               <Moment fromNow>{transaction.createdAt}</Moment>
             </Table.Cell>
@@ -50,7 +59,9 @@ class AllTransactions extends React.Component {
         return (
           <Table.Row key={i}>
             <Table.Cell>{transaction.receiver.username}</Table.Cell>
+
             <Table.Cell>{transaction.amount} satoshis</Table.Cell>
+
             <Table.Cell>
               <Moment fromNow>{transaction.createdAt}</Moment>
             </Table.Cell>
@@ -75,6 +86,7 @@ class AllTransactions extends React.Component {
                     <Table.HeaderCell className="date">Date</Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
+
                 {receiverTransactionHtml}
               </Table>
             </div>
@@ -90,6 +102,7 @@ class AllTransactions extends React.Component {
                     <Table.HeaderCell className="date">Date</Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
+
                 {senderTransactionHtml}
               </Table>
             </div>
@@ -100,11 +113,19 @@ class AllTransactions extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {history: state.transactions}
+/**
+ * CONTAINER
+ */
+const mapState = state => {
+  return {
+    user: state.user,
+    history: state.transactions
+  }
 }
-const mapDispatchToProps = dispatch => {
-  return {getTransactions: () => dispatch(getTransactionThunk())}
+const dispatchMapState = dispatch => {
+  return {
+    getTransaction: () => dispatch(getTransactionThunk())
+  }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AllTransactions)
+export default connect(mapState, dispatchMapState)(UserInfo)
