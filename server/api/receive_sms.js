@@ -22,7 +22,8 @@ const {
   openChannel,
   listChannels,
   addInvoice,
-  sendPayment
+  sendPayment,
+  startCron
 } = require('./crypto')
 const {Transactions} = require('../db/models')
 
@@ -118,15 +119,6 @@ const updatBalances = async (sender, receiver, amount) => {
   )
 }
 
-const refill = async (user, amount) => {
-  let refillBalance = user.balance + amount
-
-  let refilledUser = await User.update(
-    {balance: refillBalance},
-    {where: {id: user.id}}
-  )
-}
-
 const subtract = async (user, amount) => {
   console.log('//////SUBTRACT//////')
   console.log('USER BALANCE IS: ', user.balance)
@@ -194,7 +186,7 @@ router.post('/', async (req, res, next) => {
     let paymentHash = 'unavailable'
 
     const messages = {
-      helpme: `Check your balance with 'BALANCE'. \n Send a transaction with 'SEND' 'Amount in Satoshis' 'Recipient Phone Number or username' \n Examples:\n 'SEND 300 +11234567890' \n or 'SEND 300 Maurice'`,
+      helpme: `'BALANCE': checks your balance. \n 'SEND': sends a transaction with  'Amt in satoshis' 'Recipient phone number or username' \n Examples:\n 'SEND 300 +11234567890' \n or 'SEND 300 Maurice' \n 'REFILL': generates a BTC address to refill to \n 'PAYINVOICE': pay any LN invoice with 'PAYINVOICE lnbcXXX...'`,
       balance: `Your lightning balance is ${balance} satoshis ($${balanceUSD.toFixed(
         2
       )} USD, ${balanceBTC} BTC).`,
@@ -205,8 +197,8 @@ router.post('/', async (req, res, next) => {
       insufficientBalance:
         'You have insufficient funds. Please enter REFILL to up your funding.',
       sent: `Boom. You made a lightning fast payment to ${ourReceiver.userName ||
-        webUserName} for ${amount} Satoshis`,
-      received: `Boom. You received a lightning fast payment for ${amount} Satoshis from ${
+        webUserName} for ${amount} satoshis`,
+      received: `Boom. You received a lightning fast payment for ${amount} satoshis from ${
         sender.username
       }`,
       refill:
@@ -215,7 +207,7 @@ router.post('/', async (req, res, next) => {
       notANumber:
         'You need to enter a valid amount in order to make payments. Example SEND 300 +11234567890',
       fractionAmount: `You can't send fractional satoshis. please send a valid amount`,
-      payinvoice: `Boom. You have successfully paid. Your payment hash is: `
+      payinvoice: `Boom. You have successfully paid. Your payment hopped `
     }
 
     if (!sender) {
@@ -225,17 +217,15 @@ router.post('/', async (req, res, next) => {
       switch (action) {
         case 'refill':
           let address = await newAddress()
-          console.log('address from switch is: ', address)
+          startCron(address, sender)
           setTimeout(() => {
-            toastMessage = address // something to check later.
+            toastMessage = address
             return sendMessage(senderPhone, address)
           }, 400)
           toastMessage = messages.refill
           sendMessage(senderPhone, messages.refill)
           break
         case 'balance': {
-          console.log('YOU ARE IN BALANCE SWITCH STATEMENT')
-          getinfo()
           toastMessage = messages.balance
           sendMessage(senderPhone, messages.balance)
           break
@@ -246,34 +236,22 @@ router.post('/', async (req, res, next) => {
           break
         case 'payinvoice':
           toastMessage = messages.payinvoice
-          console.log('PAY INVOICE //AMOUNT is: ', amount)
           let payConfirmation = await sendPayment(amount)
-          console.log('BALANCE BEFORE IS: ', balance)
           await subtract(sender, payConfirmation.payment_route.total_amt)
           let newBalance = await getBalance(senderPhone)
-          // console.log('SENDER IS: ', sender, "payconfAMOUNT is: ", payConfirmation.payment_route.total_amt)
           paymentHash = payConfirmation.payment_preimage
-          console.log(
-            'PAYMENT HASH IS: ',
-            paymentHash,
-            'PAYCONFIRMATION IS: ',
-            payConfirmation
-          )
-          console.log('TOTAL AMOUNT: ', payConfirmation.payment_route.total_amt)
           let totalFees = payConfirmation.payment_route.total_fees || 0
           let hops = payConfirmation.payment_route.hops.length
           sendMessage(
             senderPhone,
             messages.payinvoice +
-              paymentHash +
-              '.' +
-              ' Your payment hopped ' +
               hops +
-              ' times for ' +
+              ' times for a fee of ' +
               totalFees +
-              'fees.'
+              ' satoshis.' +
+              ' Your payment hash is: ' +
+              paymentHash
           )
-          console.log('BALANCE AFTER IS: ', newBalance)
           break
         case 'send':
           if (receiver === 'undefined') {
