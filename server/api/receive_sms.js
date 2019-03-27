@@ -102,8 +102,8 @@ const getBody = message => {
 const updatBalances = async (sender, receiver, amount) => {
   //console.log('sender: ', sender.id, ' receiver: ', receiver)
 
-  let senderBal = sender.balance - amount
-  let receiverBal = receiver.balance + amount
+  let senderBal = Number(sender.balance) - Number(amount)
+  let receiverBal = Number(receiver.balance) + Number(amount)
 
   //subtract from user
   let senderUpdated = await User.update(
@@ -128,12 +128,16 @@ const refill = async (user, amount) => {
 }
 
 const subtract = async (user, amount) => {
+  console.log('//////SUBTRACT//////')
+  console.log('USER BALANCE IS: ', user.balance)
+  console.log('AMOUNT IS: ', amount)
   let refillBalance = user.balance - amount
 
   let refilledUser = await User.update(
     {balance: refillBalance},
     {where: {id: user.id}}
   )
+  console.log('refilledUser //', 'DATAVAL', refilledUser)
 }
 
 router.post('/', async (req, res, next) => {
@@ -211,7 +215,7 @@ router.post('/', async (req, res, next) => {
       notANumber:
         'You need to enter a valid amount in order to make payments. Example SEND 300 +11234567890',
       fractionAmount: `You can't send fractional satoshis. please send a valid amount`,
-      payinvoice: `You have paid invoice: ${paymentHash}`
+      payinvoice: `Boom. You have successfully paid. Your payment hash is: `
     }
 
     if (!sender) {
@@ -241,16 +245,35 @@ router.post('/', async (req, res, next) => {
           sendMessage(senderPhone, messages.helpme)
           break
         case 'payinvoice':
-          // check insuficient funds; check lninvoice format
-          // if both are good, return error from lightning
           toastMessage = messages.payinvoice
           console.log('PAY INVOICE //AMOUNT is: ', amount)
           let payConfirmation = await sendPayment(amount)
-          await subtract(sender, payConfirmation.payment_route.total_amt)
-          // console.log('SENDER IS: ', sender, "payconfAMOUNT is: ", payConfirmation.payment_route.total_amt)
           console.log('BALANCE BEFORE IS: ', balance)
+          await subtract(sender, payConfirmation.payment_route.total_amt)
+          let newBalance = await getBalance(senderPhone)
+          // console.log('SENDER IS: ', sender, "payconfAMOUNT is: ", payConfirmation.payment_route.total_amt)
           paymentHash = payConfirmation.payment_preimage
-          sendMessage(senderPhone, messages.payinvoice)
+          console.log(
+            'PAYMENT HASH IS: ',
+            paymentHash,
+            'PAYCONFIRMATION IS: ',
+            payConfirmation
+          )
+          console.log('TOTAL AMOUNT: ', payConfirmation.payment_route.total_amt)
+          let totalFees = payConfirmation.payment_route.total_fees || 0
+          let hops = payConfirmation.payment_route.hops.length
+          sendMessage(
+            senderPhone,
+            messages.payinvoice +
+              paymentHash +
+              '.' +
+              ' Your payment hopped ' +
+              hops +
+              ' times for ' +
+              totalFees +
+              'fees.'
+          )
+          console.log('BALANCE AFTER IS: ', newBalance)
           break
         case 'send':
           if (receiver === 'undefined') {
