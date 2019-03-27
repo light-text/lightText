@@ -17,7 +17,14 @@ class Chart extends React.Component {
       datasets: [
         {
           label: status,
-          backgroundColor: '#a2a8d3',
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
           data: [...Object.values(data)]
         }
       ]
@@ -45,8 +52,8 @@ class Chart extends React.Component {
 
     return (
       <div className="chart">
-        <Bar data={this.createChart(sendData, 'Spending')} />
-        <Bar data={this.createChart(receiveData, 'Recieving')} />
+        <Pie data={this.createChart(sendData, 'Spending')} />
+        <Pie data={this.createChart(receiveData, 'Recieving')} />
       </div>
     )
   }

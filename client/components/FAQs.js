@@ -53,7 +53,7 @@ export default function FAQs() {
         <h2 className="question">How do I send Bitcoin with LightText ?</h2>
         <span className="description">
           You can send Bitcoin by texting 'SEND' + the amount you want to send +
-          the username or number of the person you want to end to. For more
+          the username or number of the person you want to send to. For more
           information go back to the <Link to="/">Home page.</Link>
         </span>
       </div>
