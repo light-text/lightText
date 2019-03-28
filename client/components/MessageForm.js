@@ -10,12 +10,6 @@ class MessageForm extends React.Component {
     this.getMessageStatus = this.getMessageStatus.bind(this)
   }
 
-
-  componentDidMount() {
-    this.props.transaction()
-
-  }
-
   getMessageStatus(message) {
     if (
       message.startsWith('You have insufficient') ||
@@ -76,7 +70,6 @@ const mapProps = state => {
 
 const mapDispatch = dispatch => {
   return {
-
     handleSubmit(evt) {
       evt.preventDefault()
       const messages = evt.target.messages.value

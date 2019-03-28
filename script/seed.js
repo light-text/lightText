@@ -17,11 +17,11 @@ async function seed() {
       password: '123'
     }),
     User.create({
-      username: 'maurice',
-      email: 'mao@email.com',
+      username: 'sihem',
+      email: 'sihem@email.com',
       phone: '+17328595701',
       wallet: '1',
-      balance: 229000,
+      balance: 500000,
       password: '123'
     }),
     User.create({
@@ -29,7 +29,7 @@ async function seed() {
       email: 'tali@email.com',
       phone: '+16463316367',
       wallet: '22',
-      balance: 229000,
+      balance: 500000,
       password: '123'
     }),
     User.create({

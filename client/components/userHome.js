@@ -4,6 +4,7 @@ import MessageForm from '../components/MessageForm'
 import BitcoinsInfo from '../components/BitcoinsInfo'
 import {SearchBar} from './'
 import Chart from '../components/Chart'
+import ChartTwo from '../components/ChartTwo'
 class userHome extends React.Component {
   render() {
     return (
@@ -32,8 +33,16 @@ class userHome extends React.Component {
         </div>
 
         <UserInfo />
-
-        <Chart />
+        <div className="container chart">
+          <div className="chartOne">
+            <h3> Received chart</h3>
+            <Chart />
+          </div>
+          <div className="chartOne">
+            <h3> Sent chart</h3>
+            <ChartTwo />
+          </div>
+        </div>
       </div>
     )
   }

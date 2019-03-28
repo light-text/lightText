@@ -26,7 +26,6 @@ body {
 .container {
   display: flex;
   flex-direction: row;
-  margin-left: 40px;
 }
 
 .title {
@@ -159,7 +158,7 @@ body {
 h3 {
   margin-left: 30px;
   margin-bottom: 15px;
-  font-size: 1.5em;
+  font-size: 1.7em;
   color: #0c2550;
 }
 
@@ -349,9 +348,14 @@ form.message .ui.button {
 }
 
 .chart {
-  height: 500px;
-  width: 500px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  display: flex;
+  justify-content: space-around;
+  /* height: 200px;
+  width: 100%;
   background-color: #e9e4e6;
+  margin-left: auto; */
 }
 
 .lastDiv {
@@ -394,6 +398,10 @@ form.message .ui.button {
   width: 50%;
 }
 
-.twoChart {
-  width: 50%;
+.chartOne {
+  padding-top: 20px;
+  padding-bottom: 40px;
+  width: 60%;
+  border: 3 solid black;
+  background-color: #e7eaf6;
 }

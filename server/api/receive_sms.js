@@ -120,16 +120,12 @@ const updatBalances = async (sender, receiver, amount) => {
 }
 
 const subtract = async (user, amount) => {
-  console.log('//////SUBTRACT//////')
-  console.log('USER BALANCE IS: ', user.balance)
-  console.log('AMOUNT IS: ', amount)
   let refillBalance = user.balance - amount
 
   let refilledUser = await User.update(
     {balance: refillBalance},
     {where: {id: user.id}}
   )
-  console.log('refilledUser //', 'DATAVAL', refilledUser)
 }
 
 router.post('/', async (req, res, next) => {
@@ -142,7 +138,7 @@ router.post('/', async (req, res, next) => {
     messageFromWeb,
     toastMessage
 
-  senderPhone = req.user.phone
+  senderPhone = req.user ? req.user.phone : ''
   if (req.body.messages) {
     messageFromWeb = await findUserByUsername(
       getBody(req.body.messages.toLowerCase())[2]
