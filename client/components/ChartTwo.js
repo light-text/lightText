@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {Bar, Pie, Polar} from 'react-chartjs-2'
 import {getTransactionThunk} from '../store/transactions'
-class ChartTwo extends React.Component {
+class Chart extends React.Component {
   constructor(props) {
     super(props)
     this.createChart = this.createChart.bind(this)
@@ -18,9 +18,9 @@ class ChartTwo extends React.Component {
         {
           label: status,
           backgroundColor: [
-            '#d34848',
-            '#ff8162',
-            '#fffa67',
+            '#616f39',
+            '#a7d129',
+            '#f8eeb4',
             'rgba(153, 102, 255, 0.2)',
             '#62374e'
           ],
@@ -31,19 +31,19 @@ class ChartTwo extends React.Component {
   }
 
   render() {
-    const receiveData = {}
+    const sendData = {}
 
-    !!this.props.history.transaction.sender &&
-      this.props.history.transaction.sender.forEach(user => {
-        const username = user.receiver.username
-        !receiveData[username]
-          ? (receiveData[username] = user.amount)
-          : (receiveData[username] += user.amount)
+    !!this.props.history.transaction.receiver &&
+      this.props.history.transaction.receiver.forEach(user => {
+        const username = user.sender.username
+        !sendData[username]
+          ? (sendData[username] = user.amount)
+          : (sendData[username] += user.amount)
       })
 
     return (
       <div>
-        <Pie data={this.createChart(receiveData, 'Recieving')} />
+        <Pie data={this.createChart(sendData, 'Spending')} />
       </div>
     )
   }
@@ -55,4 +55,4 @@ const mapDispatchToProps = dispatch => {
   return {getTransactions: () => dispatch(getTransactionThunk())}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChartTwo)
+export default connect(mapStateToProps, mapDispatchToProps)(Chart)

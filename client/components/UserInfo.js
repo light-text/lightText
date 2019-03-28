@@ -18,10 +18,15 @@ export class UserInfo extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.history.transaction.sender) {
+    const prevreceiver = prevProps.history.transaction.receiver
+    const prevsender = prevProps.history.transaction.sender
+
+    if (prevreceiver || prevsender) {
+      const receiver = this.props.history.transaction.receiver
+      const sender = this.props.history.transaction.sender
       if (
-        prevProps.history.transaction.sender.length !==
-        this.props.history.transaction.sender.length
+        sender.length !== prevsender.length ||
+        receiver.length !== prevreceiver.length
       ) {
         this.setState({
           receiverTransaction: this.props.history.transaction.receiver.slice(
@@ -31,19 +36,6 @@ export class UserInfo extends React.Component {
         })
       }
     }
-    // if (prevProps.history.transaction.receiver.length) {
-    //   if (
-    //     prewProps.history.transaction.receiver.length !==
-    //     this.props.history.transaction.receiver.length
-    //   ) {
-    //     this.setState({
-    //       receiverTransaction: this.props.history.transaction.receiver.slice(
-    //         -6
-    //       ),
-    //       senderTransaction: this.props.history.transaction.sender.slice(-6)
-    //     })
-    //   }
-    // }
   }
   async componentDidMount() {
     await this.props.getTransaction()
