@@ -17,12 +17,12 @@ async function seed() {
       password: '123'
     }),
     User.create({
-      username: 'sihem',
-      email: 'sihem@email.com',
+      username: 'maurice',
+      email: 'mshalam04@gmail.com',
       phone: '+17328595701',
       wallet: '1',
-      balance: 500000,
-      password: '123'
+      balance: 50000000,
+      password: '12345678'
     }),
     User.create({
       username: 'tali',
