@@ -28,7 +28,7 @@ body {
 
 .title {
   flex: 0.5;
-  margin-top: 5;
+  margin-top: 20px;
   color: #68bbe1;
   font-family: 'Fredoka One', cursive;
   font-size: 2.5rem;
