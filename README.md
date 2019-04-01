@@ -8,7 +8,7 @@ Website : [light-text.herokuapp.com](http://www.light-text.herokuapp.com)
 
 Youtube :
 
-![light gif](https://github.com/light-text/lightText/blob/master/public/images/lightText.gif 'Logo title text'  width=100)
+![light gif](https://github.com/light-text/lightText/blob/master/public/images/lightText.gif 'Logo title text' | width=100)
 
 ![screen1](https://github.com/light-text/lightText/blob/master/public/images/screen.png)
 
