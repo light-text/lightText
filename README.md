@@ -10,10 +10,10 @@ Youtube :
 
 ![light gif](https://github.com/light-text/lightText/blob/master/public/images/lightText.gif 'Logo title text')
 
-![screen1](/images/screen.png)
+![screen1](https://github.com/light-text/lightText/blob/master/public/images/screen.png)
 
-![screen2](/images/screen2.png)
+![screen2](https://github.com/light-text/lightText/blob/master/public/images/screen2.png)
 
-![screen4](/images/screen4.png)
+![screen4](https://github.com/light-text/lightText/blob/master/public/images/screen4.png)
 
-![screen3](/images/screen3.png)
+![screen3](https://github.com/light-text/lightText/blob/master/public/images/screen3.png)
