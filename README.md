@@ -6,7 +6,7 @@ Grab your favorite Nokia phone, sign up, fund your account with bitcoin and begi
 
 Website : [light-text.herokuapp.com](http://www.light-text.herokuapp.com)
 
-Youtube :
+Youtube : https://youtu.be/SxjsJ4FDSzI
 
 <img src='https://github.com/light-text/lightText/blob/master/public/images/lightText.gif' width='35%' hegiht='35%'>
 
