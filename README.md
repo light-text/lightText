@@ -4,7 +4,7 @@ LightText (LT) is a lightning wallet that allows you to send and receive bitcoin
 
 Grab your favorite Nokia phone, sign up, fund your account with bitcoin and begin paying friends and lightning invoices.
 
-Website : [light-text.herokuapp.com](http://www.light-text.herokuapp.com)
+Website : [light-text.herokuapp.com](https://light-text.herokuapp.com/)
 
 Youtube : https://youtu.be/SxjsJ4FDSzI
 
