@@ -1,6 +1,6 @@
 # LightText
 
-LightText (LT) is a lightning wallet that allows you to send and receive bitcoin payments over the lightning network. LT is an SMS client aimed to provide access to crypto infrastructure for individuals without smartphones.
+LightText (LT) is a lightning wallet that allows you to send and receive bitcoin payments over the lightning network. LT is an SMS client aimed to provide access to crypto infrastructure for individuals without smartphones. 
 
 Grab your favorite Nokia phone, sign up, fund your account with bitcoin and begin paying friends and lightning invoices.
 
